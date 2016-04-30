@@ -1,0 +1,15 @@
+lot1:
+
+gestion des connexion
+
+
+lot2:
+
+gestion des recettes
+
+
+lot3:
+
+ams des recettes
+ams des sites
+

@@ -1,11 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zaafranigabriel
- * Date: 03/03/2016
- * Time: 20:39
- */
+
 session_start();
+require_once("class/Recette.php");
+
+
 ?>
 <html>
 
@@ -35,32 +33,37 @@ session_start();
 </center>
 <center>
     <fieldset>
-        <legend>Ecrire votre article</legend>
-    <form enctype="multipart/form-data" method="post" onsubmit="return mySubmitFunction()" action="TratementArticles.php">
+        <legend>Supprimer un article</legend>
+			
+    <form enctype="multipart/form-data" method="post" onsubmit="return mySubmitFunction()" action="TratementSupArt.php">
         <table>
             <tr>
                 <td>Title de l'article</td>
             </tr>
             <tr>
-                <td><input type="text" style="width: 300px;" name="title" ></td>
+                <td>
+					<select type="text" name="title" >
+						<option selected="selected" disabled="disabled">---Choisir une recette---</option>
+						<?php
+						$recette = new Recette();
+						$tableau = $recette->getRecette($_SESSION['id']);
+
+						for ($i=0;$i<count($tableau);$i++)
+						{
+							?>
+							<option value="<?php echo $tableau[$i]['title']; ?>"> <?php echo $tableau[$i]['title']; ?></option>
+							<?php
+						}
+
+						?>
+					</select>
+				</td>
             </tr>
             <tr>
-                <td>Contenu de l'article</td>
-            </tr>
-            <tr>
-                <td><textarea rows="10" cols="50" name="contenu" ></textarea></td>
-            </tr>
-            <tr>
-                <td>Image</td>
-            </tr>
-            <tr>
-                <td><input type="file" name="image"></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="creer article"></td>
+                <td><input type="submit" value="supprimer la recette"></td>
             </tr>
         </table>
-
+		
     </form>
     </fieldset>
 </center>

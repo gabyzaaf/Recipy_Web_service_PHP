@@ -9,11 +9,11 @@ class SPdo{
     const SERVER="localhost";
     const DATABASE="recipy";
     const LOGIN="root";
-    const PASSWORD="root";
+    const PASSWORD="";
     
   
     private function __construct(){
-        $dsn = 'mysql:dbname='.self::DATABASE.';host='.self::SERVER.':8889';
+        $dsn = 'mysql:dbname='.self::DATABASE.';host='.self::SERVER.':3306';
         $this->PDOinstance = new PDO($dsn,self::LOGIN,self::PASSWORD);
     }
     

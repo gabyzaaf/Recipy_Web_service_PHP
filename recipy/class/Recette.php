@@ -43,10 +43,20 @@ public function creation($idUtilisateur){
 }
 
 public function getRecette($idUtilisateur){
-	$sql = "select * from Recette where fid=:fid and visible=0";
+	$sql = "select * from Recette where fid=:fid and visible=1";
 	$tabRecette="";
 	$array = array(
 			":fid"=>$idUtilisateur
+		);
+	
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function getRecetteTitle($title){
+	$sql = "select * from Recette where title=:title and visible=1";
+	$tabRecette="";
+	$array = array(
+			":title"=>$title
 		);
 	
 	return Spdo::getInstance()->query($sql,$array);
@@ -60,11 +70,26 @@ public function visible($idRecette){
 	return Spdo::getInstance()->query($sql,$array);
 }
 
-
-
+public function updateRecette($idRecette, $idUtilisateur, $title, $contenu){
+	$sql = "update Recette set title = :title, contenu = :contenu, image_lien = '', visible = 1, partage = 0, fid = :fid where id = :id;";
+	$array = array(
+			":id"=>$idRecette,
+			":title"=>$title,
+			":contenu"=>$contenu,
+			":fid"=>$idUtilisateur
+		);
+	return Spdo::getInstance()->query($sql,$array);
 }
 
 
+public function deleteRecette($idRecette){
+	$sql = "delete from Recette where id = :id";
+	$array = array(
+			":id"=>$idRecette
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+}
 
 
 ?>

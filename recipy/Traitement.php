@@ -49,17 +49,19 @@ if((empty($_POST['login'])) || (empty($_POST['pass']))){
     <div class="menu1">
         <fieldset>
             <legend>Menu</legend>
-        <table border="1">
-            <tr >
-                <td><a href="profiUtilisateur.php">informations</a></td>
-                <td><a href="ArticlesUtilisateur.php">Consulter ses articles</a></td>
-            </tr>
-            <tr>
-                <td><a href="CreeArticle.php">Creer un nouvel article</a></td>
-                <td><a href="RechercherArticle.php">Rechercher Article</a></td>
-            </tr>
+				<table border="1">
+					<tr >
+						<td><a href="profiUtilisateur.php">informations</a></td>
+						<td><a href="ArticlesUtilisateur.php">Consulter ses articles</a></td>
+						<td><a href="RechercherArticle.php">Rechercher Article</a></td>
+					</tr>
+					<tr>
+						<td><a href="CreeArticle.php">Creer un nouvel article</a></td>
+						<td><a href="ModifierArticle.php">Modifier un article</a></td>
+						<td><a href="SupprimerArticle.php">Supprimer un article</a></td>
+					</tr>
 
-        </table>
+				</table>
         </fieldset>
     </div>
     </center>
