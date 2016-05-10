@@ -1,0 +1,41 @@
+body {
+    padding-top: 5rem;
+}
+
+.starter-template {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+#searchform {
+    position: absolute;
+    top: 311px;
+}
+
+.tab-content form {
+    margin-top: 10px;
+}
+
+.nav-tabs .nav-item + .nav-item.col-xs-6 {
+    margin-left: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.food-list {
+    padding-left: 25%;
+}
+
+.food-list .recipy-title {
+    margin-left: 10px;
+}
+
+.nav-link.fa {
+    width: 50px;
+}
+
+.nav-pills-right .nav-item {
+    float:right;
+}

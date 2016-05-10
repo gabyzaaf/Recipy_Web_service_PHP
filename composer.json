@@ -1,0 +1,8 @@
+{
+    "name": "esgi/recipy",
+    "description": "Annual Project",
+    "type": "project",
+    "require": {
+        "symfony/twig-bundle": "^3.0"
+    }
+}

@@ -13,9 +13,7 @@ if(empty($_SESSION)){
 }
 
 $recette = new Recette(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-
-
-$var = $recette->getRecette($_SESSION['id']);
+$var = $recette->getRecette($_SESSION["id"]);
 
 ?>
 
@@ -25,7 +23,20 @@ $var = $recette->getRecette($_SESSION['id']);
 
     </head>
     <body>
-    <?php require_once('menu/menu.php')?>
+    <fieldset>
+        <legend>Menu</legend>
+        <table border="1">
+            <tr >
+                <td><a href="profiUtilisateur.php">informations</a></td>
+                <td><a href="ArticlesUtilisateur.php">Consulter ses articles</a></td>
+            </tr>
+            <tr>
+                <td><a href="CreeArticle.php">Creer un nouvel article</a></td>
+                <td><a href="RechercherArticle.php">Rechercher Article</a></td>
+            </tr>
+
+        </table>
+    </fieldset>
     <?php
         if(empty($var)){
             ?>
@@ -41,17 +52,17 @@ $var = $recette->getRecette($_SESSION['id']);
         }else{
             for($i=0;$i<count($var);$i++) {
                 ?>
-                <fieldset>
-                    <legend><?php echo $var[$i]["title"];?></legend>
-                    <table>
-                        <tr>
-                            <td>contenu</td>
-                            <td><?php echo $var[$i]["contenu"];?></td>
-                        </tr>
+                <table>
+                    <tr>
+                        <td>title</td>
+                        <td><?php echo $var[$i]["title"];?></td>
+                    </tr>
+                    <tr>
+                        <td>contenu</td>
+                        <td><?php echo $var[$i]["contenu"];?></td>
+                    </tr>
 
-                    </table>
-                </fieldset>
-
+                </table>
                 <?php
             }
                 ?>
