@@ -1,41 +1,25 @@
 app_recipy:
+    image: silintl/php7
     dns:
         - "8.8.8.8"
+    ports:
+        - "63530:80"
     volumes:
         - "../:/var/www/html"
     links:
-        - mariadb:mariadb
+        - mariadb
+#        - maildev:maildev
+
 mariadb:
     image: bitnami/mariadb
+    ports:
+        - "8889:3306"
     environment:
         - MARIADB_USER=root
         - MARIADB_PASSWORD=root
         - MARIADB_DATABASE=recipy
-## Configuration Apache
-web:
-    restart: always
-    build: apache-php7
-    ports:
-        - "63530:80"
-    dns:
-        - "8.8.8.8"
-    volumes:
-        - /var/www:/var/www/local.dev
-        - /var/www/docker/php.ini:/etc/php5/apache2/conf.d/30-custom.ini
-        - /var/www/docker/sites:/etc/apache2/sites-enabled
-    environment:
-        - ALLOW_OVERRIDE=true
-    links:
-        - mariadb:mariadb
-        #- maildev:maildev
 
-mariadb:
-    image: mysql
-    restart: always
-    volumes:
-        - /var/lib/boot2docker/mysql:/var/lib/mysql
-    environment:
-        - MYSQL_ROOT_PASSWORD=root
+
 
 #maildev:
 #    restart: always
