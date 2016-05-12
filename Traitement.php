@@ -6,9 +6,10 @@ require_once("class/utilisateur.php");
  * Date: 02/03/2016
  * Time: 21:00
  */
-
+session_start();
 if((empty($_POST['login'])) || (empty($_POST['pass']))){
     header('Location: index.php?err=1');
+    exit();
 }else{
     $login = $_POST['login'];
     $pass = $_POST['pass'];
@@ -16,12 +17,6 @@ if((empty($_POST['login'])) || (empty($_POST['pass']))){
     $arrayUser = $user->getConnexion();
 
 
-
-
-
-
-
-    session_start();
 
     $_SESSION['id'] = $arrayUser[0]['id'];
     $_SESSION['login'] = $arrayUser[0]['logins'];
