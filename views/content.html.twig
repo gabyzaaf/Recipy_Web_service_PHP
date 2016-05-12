@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Recipy | Home</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="public/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="public/css/style.css" rel="stylesheet">
+    <style type="text/css">
+        :root .carbonad,
+        :root #content > #right > .dose > .dosesingle,
+        :root #content > #center > .dose > .dosesingle,
+        :root #carbonads-container {
+            display: none !important;
+        }
+    </style>
+    <style type="text/css"></style>
 </head>
 <body>
-{% include 'header.html.twig' %}
-
+<header>
+    {% include 'header.html.twig' %}
+</header>
 {% block content %}
 {% endblock %}
 
