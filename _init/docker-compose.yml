@@ -1,5 +1,6 @@
 app_recipy:
     image: silintl/php7
+    container_name: app_recipy
     dns:
         - "8.8.8.8"
     ports:
@@ -7,17 +8,17 @@ app_recipy:
     volumes:
         - "../:/var/www/html"
     links:
-        - mariadb
+        - mysql:mariadb
 #        - maildev:maildev
 
-mariadb:
-    image: bitnami/mariadb
+mysql:
+    image: mysql
+    container_name: app_mysql
     ports:
         - "8889:3306"
     environment:
-        - MARIADB_USER=root
-        - MARIADB_PASSWORD=root
-        - MARIADB_DATABASE=recipy
+        - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+        - MYSQL_DATABASE=recipy
 
 
 
