@@ -1,5 +1,6 @@
 body {
-    padding-top: 5rem;
+    padding: 0;
+    margin: 0;
 }
 
 .starter-template {
@@ -37,5 +38,20 @@ body {
 }
 
 .nav-pills-right .nav-item {
-    float:right;
+    float: right;
+}
+
+.dropdown-menu > li > span {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.tooltip-arrow,
+.n-tooltip + .tooltip > .tooltip-inner {
+    background-color: #000000;
 }

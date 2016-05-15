@@ -1,0 +1,13 @@
+{% extends 'content.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12"><title>Account</title></div>
+        <div class="col-md-12">
+            {% include'nav/account.html.twig' %}
+        </div>
+    </div><!-- /.container -->
+
+
+    {% include 'modal/modal.html.twig' with {'body': 'modal/login'} %}
+{% endblock %}

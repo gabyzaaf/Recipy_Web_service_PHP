@@ -1,12 +1,14 @@
 <?php
-require_once("class/utilisateur.php");
-/**
- * Created by PhpStorm.
- * User: zaafranigabriel
- * Date: 02/03/2016
- * Time: 21:00
- */
+
+require_once 'vendor/autoload.php';
+require_once 'class/utilisateur.php';
+
 session_start();
+$loader = new Twig_Loader_Filesystem('./views/');
+$twig = new Twig_Environment($loader, array('debug' => true));
+$twig->addExtension( new Twig_Extension_Debug());
+$twig->addExtension( new Recipy\Extension\Twig\User());
+
 if((empty($_POST['login'])) || (empty($_POST['pass']))){
     header('Location: index.php?err=1');
     exit();
@@ -14,7 +16,8 @@ if((empty($_POST['login'])) || (empty($_POST['pass']))){
     $login = $_POST['login'];
     $pass = $_POST['pass'];
     $user = new Utilisateur(NULL,NULL,NULL,$login,NULL,1,NULL,$pass,0);
-    $arrayUser = $user->getConnexion();
+    //$arrayUser = $user->getConnexion();
+
 
 
 
@@ -68,25 +71,3 @@ if((empty($_POST['login'])) || (empty($_POST['pass']))){
    <?php
     require_once('menu/menu.php');
    ?>
-
-    <div class="legend1">
-    <center>
-            <fieldset>
-                <legend>Identification : </legend>
-               <table>
-                   <tr>
-                    <td><label>nom :</label></td><td><label><?php echo $_SESSION['nom']?></label></td>
-                </tr>
-                <tr>
-                    <td><label>prenom :</label></td><td><label><?php echo $_SESSION['prenom']?></label></td>
-                </tr>
-                <tr>
-                    <td><label>email :</label></td><td><labe><?php echo $_SESSION['email']?></labe></td>
-                </tr>
-               </table>
-            </fieldset>
-    </center>
-    </div>
-    </body>
-
-</html>

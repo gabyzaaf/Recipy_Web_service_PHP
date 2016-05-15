@@ -2,7 +2,13 @@
     "name": "esgi/recipy",
     "description": "Annual Project",
     "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Recipy\\": "./"
+        }
+    },
     "require": {
-        "symfony/twig-bundle": "^3.0"
+        "symfony/twig-bundle": "^3.0",
+        "symfony/var-dumper": "^3.0" 
     }
 }
