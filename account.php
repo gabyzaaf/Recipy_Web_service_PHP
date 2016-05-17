@@ -2,15 +2,11 @@
 
 require_once 'vendor/autoload.php';
 
+session_start();
 $loader = new Twig_Loader_Filesystem('./views/');
 $twig = new Twig_Environment($loader, array('debug' => true));
 $twig->addExtension( new Twig_Extension_Debug());
 $twig->addExtension( new \Recipy\Extension\Twig\User());
-$template = $twig->loadTemplate('account.html.twig');
-session_start();
-$app = ['user' => [
-    'isLogged' => !!$_SESSION['id']
-]
-];
+$template = $twig->loadTemplate('page/account.html.twig');
 
 echo $template->render(array('app' => $app));

@@ -1,39 +1,13 @@
-<html>
-<head>
-
-</head>
-<body>
-
-    <center>
-<form action="Traitement.php" method="post">
-    <fieldset>
-        <legend>Authentification</legend>
-    <table>
-        <tr>
-            <td><label>Login : </label></td><td><input type="text" name="login"><br/></td>
-        </tr>
-        <tr>
-            <td> <label>Mot de passe</label></td><td><input type="password" name="pass"></td>
-        </tr>
-        <tr>
-            <td><input type="submit" values="Connexion"></td>
-        </tr>
-    </table>
-    </fieldset>
-</form>
-        <a href="inscription.php">Inscription</a>
-    </center>
-</body>
-
-</html>
-
-
 <?php
-/**
- * Created by PhpStorm.
- * User: zaafranigabriel
- * Date: 02/03/2016
- * Time: 20:52
- */
 
-?>
+require_once 'vendor/autoload.php';
+
+session_start();
+$loader = new Twig_Loader_Filesystem('./views/');
+$twig = new Twig_Environment($loader, array('debug' => true));
+$twig->addExtension(new Twig_Extension_Debug());
+$twig->addExtension(new Recipy\Extension\Twig\User());
+
+$template = $twig->loadTemplate('home.html.twig');
+
+echo $template->render([]);

@@ -1,4 +1,4 @@
-{% extends 'content.html.twig' %}
+{% extends 'skeletton/content.html.twig' %}
 
 {% block content %}
     <div class="row">
@@ -8,6 +8,6 @@
         </div>
     </div><!-- /.container -->
 
-
+    {% include 'section/account.html.twig' %}
     {% include 'modal/modal.html.twig' with {'body': 'modal/login'} %}
 {% endblock %}

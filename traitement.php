@@ -45,4 +45,6 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
         header('Location: index.php?err=8');
         exit();
     }
+
+    header('Location: account.php');exit();
 }
