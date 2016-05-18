@@ -7,7 +7,6 @@
             {% include'nav/account.html.twig' %}
         </div>
     </div><!-- /.container -->
-
-    {% include 'section/account.html.twig' %}
+    {% include 'form/account.html.twig' with {'form': form} %}
     {% include 'modal/modal.html.twig' with {'body': 'modal/login'} %}
 {% endblock %}
