@@ -2,11 +2,35 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-sm-12"><title>Account</title></div>
-        <div class="col-md-12">
-            {% include'nav/account.html.twig' %}
+        <div class="col-sm-12"><h1>Account</h1></div>
+        <div class="row">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item col-xs-3">
+                    <a class="nav-link text-center active" data-toggle="tab" href="#account" role="tab">Mon compte</a>
+                </li>
+                <li class="nav-item col-xs-3">
+                    <a class="nav-link text-center active" data-toggle="tab" href="#favorite" role="tab">Mes favoris</a>
+                </li>
+                <li class="nav-item col-xs-3">
+                    <a class="nav-link text-center active" data-toggle="tab" href="#recipy" role="tab">Mes recettes</a>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                {% include 'tabs/account.html.twig' %}
+                <div class="tab-pane" id="favorite" role="tabpanel">
+                    favorites
+                </div>
+                <div class="tab-pane" id="recipy" role="tabpanel">
+                    recipy
+                </div>
+            </div>
+
         </div>
     </div><!-- /.container -->
-    {% include 'form/account.html.twig' with {'form': form} %}
+
     {% include 'modal/modal.html.twig' with {'body': 'modal/login'} %}
 {% endblock %}
