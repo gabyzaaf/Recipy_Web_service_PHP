@@ -2,6 +2,7 @@
 
 require_once 'vendor/autoload.php';
 require_once 'class/utilisateur.php';
+require_once 'class/Recette.php';
 
 session_start();
 /** INIT HTTP REQUEST MANAGER */

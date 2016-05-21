@@ -69,7 +69,7 @@ require_once("class/Recette.php");
 						<?php
 						$value = 2;
 						$recette = new Recette();
-						$tableau = $recette->getRecette($_SESSION['id']);
+						$tableau = $recette->getRecette($_SESSION['user']['id']);
 
 						for ($i=0;$i<count($tableau);$i++)
 						{

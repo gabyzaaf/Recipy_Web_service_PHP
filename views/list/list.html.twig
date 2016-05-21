@@ -1,3 +1,5 @@
 <div class="list-group">
-    {# content #}
+    {% for list in row  %}
+        {% include 'row.html.twig' %}
+    {% endfor %}
 </div>

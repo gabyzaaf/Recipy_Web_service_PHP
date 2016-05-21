@@ -4,10 +4,6 @@ require_once 'vendor/autoload.php';
 require_once 'class/utilisateur.php';
 
 session_start();
-$loader = new Twig_Loader_Filesystem('./views/');
-$twig = new Twig_Environment($loader, array('debug' => true));
-$twig->addExtension(new Twig_Extension_Debug());
-$twig->addExtension(new Recipy\Extension\Twig\User());
 
 if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
     header('Location: index.php?err=1');
@@ -19,15 +15,15 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
     //$arrayUser = $user->getConnexion();
 
 
-    $_SESSION['id'] = $arrayUser[0]['id'];
-    $_SESSION['login'] = $arrayUser[0]['logins'];
-    $_SESSION['nom'] = $arrayUser[0]['nom'];
-    $_SESSION['admin'] = $arrayUser[0]['admin'];
-    $_SESSION['prenom'] = $arrayUser[0]['prenom'];
-    $_SESSION['email'] = $arrayUser[0]['email'];
+    $_SESSION['user']['id'] = $arrayUser[0]['id'];
+    $_SESSION['user']['login'] = $arrayUser[0]['logins'];
+    $_SESSION['user']['nom'] = $arrayUser[0]['nom'];
+    $_SESSION['user']['admin'] = $arrayUser[0]['admin'];
+    $_SESSION['user']['prenom'] = $arrayUser[0]['prenom'];
+    $_SESSION['user']['email'] = $arrayUser[0]['email'];
     $hashValue = sha1($_POST['login'] . "" . $_POST['pass']);
 
-    $val = $user->checkingToken($_SESSION['id']);
+    $val = $user->checkingToken($_SESSION['user']['id']);
 
 
     $user->setToken($hashValue);
@@ -36,12 +32,12 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
      *  ERR = 8 is when you can't connect the user
      *
      * */
-    if (($user->activeSession($_SESSION['id'])) == false) {
+    if (($user->activeSession($_SESSION['user']['id'])) == false) {
         header('Location: index.php?err=8');
         exit();
     }
-    $_SESSION['Token'] = $hashValue;
-    if ($_SESSION['admin'] == true) {
+    $_SESSION['token'] = $hashValue;
+    if ($_SESSION['user']['admin'] == true) {
         header('Location: index.php?err=8');
         exit();
     }

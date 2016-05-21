@@ -30,7 +30,7 @@ class User extends Twig_Extension
      */
     protected function isLogged() : bool
     {
-        return !!($_SESSION['id'] ?? false);
+        return !!($_SESSION['user']['id'] ?? true);
     }
 
     /**
