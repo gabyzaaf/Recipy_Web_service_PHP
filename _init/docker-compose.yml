@@ -21,6 +21,16 @@ mysql:
         - MYSQL_DATABASE=recipy
 
 
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: myadmin
+    environment:
+     - PMA_ARBITRARY=1
+    restart: always
+    links:
+     - mysql
+    ports:
+     - 63830:80
 
 #maildev:
 #    restart: always
