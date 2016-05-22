@@ -30,26 +30,77 @@ class Utilisateur
     }
 
     /**
+     * @return bool
+     */
+    public function loadCurrentUser() : bool
+    {
+        if (!isset($_SESSION['user']['id']) || !isset($_SESSION['user']['token']))
+            return false;
+
+        $users = $this->getCurrentUser($_SESSION['user']['id'], $_SESSION['user']['token']);
+
+        if (empty($users))
+            return false;
+
+        $user = reset($users);
+
+        $this->id = $user['id'];
+        $this->nom = $user['nom'];
+        $this->prenom = $user['prenom'];
+        $this->email = $user['email'];
+        $this->naissance = new DateTime($user['naissance']);
+        $this->logins = $user['logins'];
+        $this->admin = $user['admin'];
+        $this->actif = $user['actif'];
+        $this->token = $user['Token'];
+
+        return true;
+    }
+
+    /**
      * @param int    $id
      * @param string $token
      *
      * @return Utilisateur
      */
-    public function getCurrentUser(int $id, string $token) : Utilisateur
+    public function getCurrentUser(int $id, string $token)
     {
-        $sql = "SELECT token FROM ustilisateur WHERE id = :id AND token = :token";
+        $sql = "SELECT * FROM Utilisateur WHERE id = :id AND token = :token";
         $array = array(
             ":id"    => $id,
             ":token" => $token
         );
 
         $dataUsers = Spdo::getInstance()->query($sql, $array);
-        if (is_array($dataUsers)) {
-            $dataUsers = reset($dataUsers);
-            $user = new Utilisateur();
+
+        return $dataUsers;
+    }
+
+    /**
+     * @return array|bool|string
+     */
+    public function saveProfile()
+    {
+        $sql = "UPDATE Utilisateur 
+                SET nom=:nom, prenom=:prenom, email=:email, naissance = :naissance 
+                WHERE id = :id AND Token = :token;";
+
+        $naissance = $this->naissance;
+
+        if ($naissance instanceof DateTime) {
+            $naissance = $naissance->format('Y-m-d');
         }
 
-        return false;
+        $array = array(
+            ":id"        => $this->id,
+            ":token"     => $this->token,
+            ":nom"       => $this->nom,
+            ":prenom"    => $this->prenom,
+            ":email"     => $this->email,
+            ":naissance" => $naissance
+        );
+
+        return Spdo::getInstance()->query($sql, $array);
     }
 
     public function ajoutStorage()
@@ -240,8 +291,125 @@ class Utilisateur
         return Spdo::getInstance()->query($sql, $array);
     }
 
+    /**
+     * @return null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return null
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * @return null
+     */
+    public function getPrenom()
+    {
+        return $this->prenom;
+    }
+
+    /**
+     * @return null
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return null
+     */
+    public function getLogins()
+    {
+        return $this->logins;
+    }
+
+    /**
+     * @return null
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @return null
+     */
+    public function getNaissance()
+    {
+        return $this->naissance;
+    }
+
+    /**
+     * @return null
+     */
+    public function getActif()
+    {
+        return $this->actif;
+    }
+
+    /**
+     * @param null $nom
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+    }
+
+    /**
+     * @param null $prenom
+     */
+    public function setPrenom($prenom)
+    {
+        $this->prenom = $prenom;
+    }
+
+    /**
+     * @param null $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @param null $naissance
+     */
+    public function setNaissance($naissance)
+    {
+        $this->naissance = $naissance;
+    }
+
+    /**
+     * @return null
+     */
+    public function getMdp()
+    {
+        return $this->mdp;
+    }
+
+    /**
+     * @param null $mdp
+     */
+    public function setMdp($mdp)
+    {
+        $this->mdp = $mdp;
+    }
+
+    /**
+     * @param null $logins
+     */
+    public function setLogins($logins)
+    {
+        $this->logins = $logins;
+    }
+
 
 }
-
-
-?>

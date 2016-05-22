@@ -1,26 +1,30 @@
 <?php
 
-require_once 'vendor/autoload.php';
-require_once 'class/utilisateur.php';
+include_once 'appKernel.php';
 
-session_start();
 
 if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
     header('Location: index.php?err=1');
     exit();
 } else {
-    $login = $_POST['login'];
-    $pass = $_POST['pass'];
+    $login = $request->request->get('login');
+    $pass = $request->request->get('pass');
     $user = new Utilisateur(null, null, null, $login, null, 1, null, $pass, 0);
-    //$arrayUser = $user->getConnexion();
+    $arrayUser = $user->getConnexion();
 
+    if (empty($arrayUser)) {
+        header('Location: index.php?err=1');
+        exit();
+    }
 
-    $_SESSION['user']['id'] = $arrayUser[0]['id'];
-    $_SESSION['user']['login'] = $arrayUser[0]['logins'];
-    $_SESSION['user']['nom'] = $arrayUser[0]['nom'];
-    $_SESSION['user']['admin'] = $arrayUser[0]['admin'];
-    $_SESSION['user']['prenom'] = $arrayUser[0]['prenom'];
-    $_SESSION['user']['email'] = $arrayUser[0]['email'];
+    $userData = reset($arrayUser);
+
+    $_SESSION['user']['id'] = $userData['id'];
+    $_SESSION['user']['login'] = $userData['logins'];
+    $_SESSION['user']['nom'] = $userData['nom'];
+    $_SESSION['user']['admin'] = $userData['admin'];
+    $_SESSION['user']['prenom'] = $userData['prenom'];
+    $_SESSION['user']['email'] = $userData['email'];
     $hashValue = sha1($_POST['login'] . "" . $_POST['pass']);
 
     $val = $user->checkingToken($_SESSION['user']['id']);
@@ -36,11 +40,11 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
         header('Location: index.php?err=8');
         exit();
     }
-    $_SESSION['token'] = $hashValue;
+    $_SESSION['user']['token'] = $hashValue;
     if ($_SESSION['user']['admin'] == true) {
         header('Location: index.php?err=8');
         exit();
     }
-
-    header('Location: account.php');exit();
+    header('Location: account.php');
+    exit();
 }

@@ -15,20 +15,20 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
     ->getFormFactory();
 
 $user = new utilisateur();
+$user->loadCurrentUser();
 
 /**
  * Controller to My account part
  */
-$form = $formFactory->createBuilder('\Recipy\Form\UserType')
+$form = $formFactory->createBuilder('\Recipy\Form\UserType', $user)
     ->add('save', Form\Extension\Core\Type\SubmitType::class, array('label' => 'Send'))
     ->getForm();
 
 $form->handleRequest($request);
 
 if ($form->isSubmitted() && $form->isValid()) {
-    /** TODO: process de mise a jour */
-    dump('VALID', $form->getData());
-    die;
+    $user->saveProfile();
+    header('Location: /account.php');exit();
 }
 
 $formViewAccount = $form->createView();
@@ -38,7 +38,8 @@ $formViewAccount = $form->createView();
  */
 
 $recipy = new Recette();
-
+/** TODO: process de mise a jour des recettes */
+dump('TODO');
 $recipies = $recipy->findByUserId($_SESSION['user']['id']);
 
 echo $template->render(array('form' => $formViewAccount, 'list' => ['recipies' => $recipies]));

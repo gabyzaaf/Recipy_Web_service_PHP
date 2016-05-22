@@ -20,7 +20,7 @@ class SPdo{
             $this->PDOinstance = new PDO($dsn,self::LOGIN,self::PASSWORD);
         } catch (PDOException $e ) {
             $dsn = 'mysql:dbname='.self::DATABASE.';host='.self::SERVER_DOCKER.':3306';
-            $this->PDOinstance = new PDO($dsn,self::LOGIN,self::PASSWORD);
+            $this->PDOinstance = new PDO($dsn,self::LOGIN,"");
         }
     }
     

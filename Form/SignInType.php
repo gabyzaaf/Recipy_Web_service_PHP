@@ -10,12 +10,19 @@ use Symfony\Component\Form\Extension\Core\Type;
  * Class UserType
  * @package Recipy\Form
  */
-class UserType extends AbstractType
+class SignInType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username', Type\TextType::class)
-            ->add('password', Type\PasswordType::class);
+        $builder
+            ->add('logins', Type\TextType::class)
+            ->add('mdp', Type\RepeatedType::class, array(
+                'type'            => Type\PasswordType::class,
+                'options'         => array('attr' => array('class' => 'password-field')),
+                'required'        => true,
+                'first_options'   => array('label' => 'Password'),
+                'second_options'  => array('label' => 'Repeat Password'),
+            ));
     }
 
     public function getName()
