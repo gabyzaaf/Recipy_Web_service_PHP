@@ -245,11 +245,11 @@ class Utilisateur
     {
 
         if ($id == null || $id == 0) {
-
+            unset($_SESSION['user']);
             header('Location: index.php?err=7');
         }
         if ($this->token == null) {
-
+            unset($_SESSION['user']);
             header('Location: index.php?err=8');
         }
 

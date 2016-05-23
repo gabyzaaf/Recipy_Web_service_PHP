@@ -37,11 +37,13 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
      *
      * */
     if (($user->activeSession($_SESSION['user']['id'])) == false) {
+        unset($_SESSION['user']);
         header('Location: index.php?err=8');
         exit();
     }
     $_SESSION['user']['token'] = $hashValue;
     if ($_SESSION['user']['admin'] == true) {
+        unset($_SESSION['user']);
         header('Location: index.php?err=8');
         exit();
     }
