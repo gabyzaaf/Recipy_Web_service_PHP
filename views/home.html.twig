@@ -1,0 +1,15 @@
+{% extends 'content.html.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <form class="bd-search col-md-offset-2 col-md-8">
+                <input type="text" class="form-control" id="search-input" placeholder="Search..." autocomplete="off">
+                <div class="dropdown-menu bd-search-results" id="search-results"></div>
+            </form>
+        </div>
+    </div><!-- /.container -->
+
+
+    {% include 'modal/modal.html.twig' with {'body': 'modal/login'} %}
+{% endblock %}

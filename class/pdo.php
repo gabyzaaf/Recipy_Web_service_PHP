@@ -7,14 +7,21 @@ class SPdo{
     private static $instance = null;
     
     const SERVER="localhost";
+    const SERVER_DOCKER="mariadb";
+    const PORT="8889";
     const DATABASE="recipy";
     const LOGIN="root";
     const PASSWORD="root";
     
   
     private function __construct(){
-        $dsn = 'mysql:dbname='.self::DATABASE.';host='.self::SERVER.':8889';
-        $this->PDOinstance = new PDO($dsn,self::LOGIN,self::PASSWORD);
+        $dsn = 'mysql:dbname='.self::DATABASE.';host='.self::SERVER.':3306';
+        try{
+            $this->PDOinstance = new PDO($dsn,self::LOGIN,self::PASSWORD);
+        } catch (PDOException $e ) {
+            $dsn = 'mysql:dbname='.self::DATABASE.';host='.self::SERVER_DOCKER.':3306';
+            $this->PDOinstance = new PDO($dsn,self::LOGIN,"");
+        }
     }
     
     public static function getInstance(){

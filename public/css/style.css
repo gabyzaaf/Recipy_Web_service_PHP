@@ -1,0 +1,64 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.starter-template {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+#searchform {
+    position: absolute;
+    top: 311px;
+}
+
+.tab-content form {
+    margin-top: 10px;
+}
+
+.nav-tabs .nav-item + .nav-item.col-xs-6 {
+    margin-left: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.food-list {
+    padding-left: 25%;
+}
+
+.food-list .recipy-title {
+    margin-left: 10px;
+}
+
+.food-list .recipy-title,
+.food-list .recipy-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nav-link.fa {
+    width: 50px;
+}
+
+.nav-pills-right .nav-item {
+    float: right;
+}
+
+.dropdown-menu > li > span {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.tooltip-arrow,
+.n-tooltip + .tooltip > .tooltip-inner {
+    background-color: #000000;
+}

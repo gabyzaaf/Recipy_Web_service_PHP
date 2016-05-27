@@ -1,0 +1,20 @@
+<div class="list-group">
+    {% if row_type is null %}
+        {% set row_type = 'row' %}
+    {% endif %}
+    {% if row_tpl is null %}
+        {% set row_tpl = 'list/' ~ row_type ~ '.html.twig' %}
+    {% else %}
+        {% set row_tpl = row_tpl ~ '.html.twig' %}
+    {% endif %}
+
+    {% if target %}
+        {% for row in list[target] %}
+            {% include row_tpl %}
+        {% endfor %}
+    {% else %}
+        {% for row in list %}
+            {% include row_tpl %}
+        {% endfor %}
+    {% endif %}
+</div>

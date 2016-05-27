@@ -1,0 +1,39 @@
+app_recipy:
+    image: silintl/php7
+    container_name: app_recipy
+    dns:
+        - "8.8.8.8"
+    ports:
+        - "63530:80"
+    volumes:
+        - "../:/var/www/html"
+    links:
+        - mysql:mariadb
+#        - maildev:maildev
+
+mysql:
+    image: mysql
+    container_name: app_mysql
+    ports:
+        - "8889:3306"
+    environment:
+        - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+        - MYSQL_DATABASE=recipy
+
+
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: myadmin
+    environment:
+     - PMA_ARBITRARY=1
+    restart: always
+    links:
+     - mysql
+    ports:
+     - 63830:80
+
+#maildev:
+#    restart: always
+#    image: djfarrelly/maildev
+#    ports:
+#        - "1080:80"

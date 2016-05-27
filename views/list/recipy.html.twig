@@ -1,0 +1,25 @@
+<div class="row list-group-item" style="
+        background: url('{{ row.image_lien }}') no-repeat left center;
+        background-size: 25%;">
+    <a href="#" class="food-list col-xs-9"
+    >
+        <div class="row">
+            <div class="col-md-12">
+                <span class="recipy-title">{{ row.title }}</span>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 recipy-content">
+                        <span class="">{{ row.contenu | truncate(100) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <div class="col-md-2 col-md-offset-1 text-right" style="margin-top: 10px;">
+            <a href="#" class="glyphicon glyphicon-eye-{% if row.visible %}open{% else %}close{% endif %}"
+                  style="line-height: 20px;font-size: 17px; margin-left: 10px;"></a>
+            <a href="#" class="fa fa-share-square{% if row.partage %}-o{% endif %}" aria-hidden="true"
+                  style="line-height: 20px;font-size: 20px; margin-left: 10px;"></a>
+    </div>
+</div>

@@ -8,7 +8,7 @@
 require_once('class/utilisateur.php');
 session_start();
 $utilisateur = new Utilisateur();
-$utilisateur->DesactiveSession($_SESSION["id"]);
+$utilisateur->DesactiveSession($_SESSION['user']["id"]);
 
 
 session_destroy();

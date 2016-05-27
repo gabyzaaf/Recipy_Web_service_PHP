@@ -2,7 +2,7 @@
 require_once('class/Recette.php');
 session_start();
 
-$idUser = $_SESSION['id'];
+$idUser = $_SESSION['user']['id'];
 
 if(empty($_POST['title'])){
     header('Location:  .php?err=1');

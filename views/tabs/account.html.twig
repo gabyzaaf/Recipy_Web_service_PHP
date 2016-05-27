@@ -1,0 +1,7 @@
+<div class="tab-pane{% if hasSection() == false or isSection('account') %} active{% endif %}" id="account" role="tabpanel">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% include 'form/account.html.twig' %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Recipy | Home</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+    <style type="text/css">
+        :root .carbonad,
+        :root #content > #right > .dose > .dosesingle,
+        :root #content > #center > .dose > .dosesingle,
+        :root #carbonads-container {
+            display: none !important;
+        }
+    </style>
+    <style type="text/css"></style>
+</head>
+
+<body>
+<header>
+    <!-- navigation -->
+    <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+        <a class="navbar-brand" href="#">Recipy</a>
+        <ul class="nav navbar-nav nav-pills pull-xs-right">
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#modal-login">Login</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+<div class="container">
+    <div class="row">
+        <form class="bd-search col-md-offset-2 col-md-8">
+            <input type="text" class="form-control" id="search-input" placeholder="Search..." autocomplete="off">
+            <div class="dropdown-menu bd-search-results" id="search-results"></div>
+        </form>
+    </div>
+</div><!-- /.container -->
+
+<!-- Small modal -->
+<div class="modal fade" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" hidden="true">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item col-xs-6">
+                            <a class="nav-link text-center active" data-toggle="tab" href="#login" role="tab">Sign in</a>
+                        </li>
+                        <li class="nav-item col-xs-6">
+                            <a class="nav-link text-center" data-toggle="tab" href="#register" role="tab">Sign up</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="login" role="tabpanel">
+                            <form>
+                                <div class="form-group">
+                                    <label for="login-mail" class="control-label">Login</label>
+                                    <input type="text" name="login[mail]" class="form-control" id="login-mail"   placeholder="your address mail"/>
+                                    <span class="help-block"><small>A block of help text that breaks onto a new line and may extend beyond one line.</small></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="login-password" class="control-label">Password</label>
+                                    <input type="text" name="login[password]" class="form-control" id="login-password"   placeholder="Password"/>
+                                </div>
+                            </form>
+                            <p><small><a href="#">Password lost?</a></small></p>
+                        </div>
+                        <div class="tab-pane" id="register" role="tabpanel">
+                            <form>
+                                <div class="form-group">
+                                    <label for="register-mail" class="control-label">Login</label>
+                                    <input type="text" name="register[mail]" class="form-control" id="register-mail"  placeholder="Email"/>
+                                    <span class="help-block"><small>A block of help text that breaks onto a new line and may extend beyond one line.</small></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="register-password" class="control-label">Password</label>
+                                    <input type="text" name="register[password]" class="form-control" id="register-password"  placeholder="Password"/>
+                                </div>
+                                <div class="form-group has-danger">
+                                    <input type="text" name="register[repassword]" class="form-control" id="register-repassword"  placeholder="Repeat Password"/>
+                                    <span class="help-block text-danger"><small>Le mot de passe n'est pas identique.</small></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="js/tether.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

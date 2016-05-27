@@ -1,0 +1,27 @@
+<div class="row">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item col-xs-6">
+            <a class="nav-link text-center active" data-toggle="tab" href="#login" role="tab">Sign
+                in</a>
+        </li>
+        <li class="nav-item col-xs-6">
+            <a class="nav-link text-center" data-toggle="tab" href="#register" role="tab">Sign
+                up</a>
+        </li>
+    </ul>
+</div>
+
+<div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="login" role="tabpanel">
+            {% include 'form/modal_signin.html.twig' %}
+            <p>
+                <small><a href="#">Password lost?</a></small>
+            </p>
+        </div>
+        <div class="tab-pane" id="register" role="tabpanel">
+            {% include 'form/modal_signup.html.twig' %}
+        </div>
+    </div>
+</div>
