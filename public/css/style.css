@@ -33,6 +33,13 @@ body {
     margin-left: 10px;
 }
 
+.food-list .recipy-title,
+.food-list .recipy-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .nav-link.fa {
     width: 50px;
 }

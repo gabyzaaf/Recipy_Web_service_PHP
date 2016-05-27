@@ -1,3 +1,28 @@
-<div class="tab-pane" id="recipy" role="tabpanel">
-    {% include 'list/list.html.twig'  %}
+<div class="tab-pane{% if isSection('recipy') %} active{% endif %}" id="recipy" role="tabpanel">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <form role="search">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search"/>
+                                <span class="input-group-btn" data-original-title="" title="">
+                                    <button type="submit" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-search"
+                                              data-original-title="" title=""></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-12">
+                    {% include 'list/list.html.twig' with {'target': 'recipies', 'row_type': 'recipy'} %}
+                </div>
+                {% include 'pagination/pagination.html.twig' %}
+            </div>
+        </div>
+    </div>
 </div>

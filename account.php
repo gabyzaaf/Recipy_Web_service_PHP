@@ -17,6 +17,7 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
 $user = new utilisateur();
 $user->loadCurrentUser();
 
+
 /**
  * Controller to My account part
  */
@@ -38,8 +39,6 @@ $formViewAccount = $form->createView();
  */
 
 $recipy = new Recette();
-/** TODO: process de mise a jour des recettes */
-dump('TODO');
 $recipies = $recipy->findByUserId($_SESSION['user']['id']);
 
 echo $template->render(array('form' => $formViewAccount, 'list' => ['recipies' => $recipies]));

@@ -14,5 +14,8 @@ $engine = new \Symfony\Bridge\Twig\Form\TwigRendererEngine(array('bootstrap_3_la
 $engine->setEnvironment($twig);
 $twig->addExtension(new Twig_Extension_Debug());
 $twig->addExtension(new \Recipy\Extension\Twig\User());
+$twig->addExtension(new \Recipy\Extension\Twig\Page($request));
+$twig->addExtension(new Twig_Extensions_Extension_Text());
 $twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension(new \Symfony\Component\Translation\Translator('fr')));
 $twig->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension(new \Symfony\Bridge\Twig\Form\TwigRenderer($engine)));
+$twig->addGlobal('request', $request);

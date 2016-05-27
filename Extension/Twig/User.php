@@ -36,6 +36,9 @@ class User extends Twig_Extension
         return !!($_SESSION['user']['id'] ?? false);
     }
 
+    /**
+     * @return string
+     */
     protected function getUsername() {
         return $_SESSION['user']['login'] ?? 'unknow';
     }

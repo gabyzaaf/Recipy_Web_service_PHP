@@ -42,11 +42,11 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
         exit();
     }
     $_SESSION['user']['token'] = $hashValue;
-    if ($_SESSION['user']['admin'] == true) {
+    /*if ($_SESSION['user']['admin'] == true) {
         unset($_SESSION['user']);
         header('Location: index.php?err=8');
         exit();
-    }
+    }*/
     header('Location: account.php');
     exit();
 }
