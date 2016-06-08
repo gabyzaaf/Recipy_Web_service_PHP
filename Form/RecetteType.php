@@ -13,16 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type;
 class RecipyType extends AbstractType
 {
     /**
-    //private $id;
-    //private $autreId;
-    private $titre;
-    private $contenu;
-    private $image;
-    private $visible;
-    private $partage;
-    private $type;
-    private $fid;
-     * */
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -35,6 +28,9 @@ class RecipyType extends AbstractType
         ;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'recipy';
