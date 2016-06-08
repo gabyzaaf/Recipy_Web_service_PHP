@@ -7,16 +7,14 @@ class Recette
 {
 
     private $id;
-    private $autreId;
     private $titre;
     private $contenu;
     private $image;
     private $visible;
     private $partage;
-    private $type;
     private $fid;
 
-    public function __construct($id = null, $titre = null, $contenu = null, $image = null, $visible = null, $partage = null, $type = null, $fid = null)
+    public function __construct($id = null, $titre = null, $contenu = null, $image = null, $visible = null, $partage = null, $fid = null)
     {
         $this->id = $id;
         $this->titre = $titre;
@@ -24,7 +22,6 @@ class Recette
         $this->image = $image;
         $this->visible = $visible;
         $this->partage = $partage;
-        $this->type = $type;
         $this->fid = $fid;
 
     }

@@ -17,7 +17,6 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
 $user = new utilisateur();
 $user->loadCurrentUser();
 
-
 /**
  * Controller to My account part
  */
