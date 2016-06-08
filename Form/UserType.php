@@ -19,7 +19,7 @@ class UserType extends AbstractType
             ->add('email', Type\EmailType::class)
             ->add('naissance', Type\DateType::class,
                 array(
-                    'years'  => range(date('Y') - 16, date('Y') - 100),
+                    'years'  => range(date('Y') - 5, date('Y') - 100),
                     'format' => 'dd / MM / yyyy',
                 )   );
         //->add('password', Type\TextType::class);
