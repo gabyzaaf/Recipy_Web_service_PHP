@@ -1,5 +1,5 @@
 <?php
-require_once("pdo.php");
+require_once("Pdo.php");
 
 
 class Commenter

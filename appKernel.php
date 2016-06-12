@@ -1,7 +1,7 @@
 <?php
 
 require_once 'vendor/autoload.php';
-require_once 'class/utilisateur.php';
+require_once 'class/Utilisateur.php';
 require_once 'class/Recette.php';
 
 session_start();

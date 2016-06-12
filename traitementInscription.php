@@ -10,7 +10,7 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
     ->addExtension(new Form\Extension\HttpFoundation\HttpFoundationExtension())
     ->getFormFactory();
 
-$user = new utilisateur();
+$user = new Utilisateur();
 
 /**
  * Controller to My account part
