@@ -16,19 +16,6 @@ class Utilisateur
     private $actif;
     private $token;
 
-    public function __construct($id = null, $nom = null, $prenom = null, $logins = null, $email = null, $admin = null, $naissance = null, $mdp = null, $actif = null)
-    {
-        $this->id = $id;
-        $this->nom = $nom;
-        $this->prenom = $prenom;
-        $this->logins = $logins;
-        $this->email = $email;
-        $this->admin = $admin;
-        $this->naissance = $naissance;
-        $this->mdp = $mdp;
-        $this->actif = $actif;
-    }
-
     /**
      * @return bool
      */
@@ -52,7 +39,7 @@ class Utilisateur
         $this->logins = $user['logins'];
         $this->admin = $user['admin'];
         $this->actif = $user['actif'];
-        $this->token = $user['Token'];
+        $this->token = $user['token'];
 
         return true;
     }
@@ -65,7 +52,7 @@ class Utilisateur
      */
     public function getCurrentUser(int $id, string $token)
     {
-        $sql = "SELECT * FROM Utilisateur WHERE id = :id AND token = :token";
+        $sql = "SELECT * FROM utilisateur WHERE id = :id AND token = :token";
         $array = array(
             ":id"    => $id,
             ":token" => $token
@@ -81,9 +68,9 @@ class Utilisateur
      */
     public function saveProfile()
     {
-        $sql = "UPDATE Utilisateur 
+        $sql = "UPDATE utilisateur 
                 SET nom=:nom, prenom=:prenom, email=:email, naissance = :naissance 
-                WHERE id = :id AND Token = :token;";
+                WHERE id = :id AND token = :token;";
 
         $naissance = $this->naissance;
 
@@ -122,7 +109,7 @@ class Utilisateur
 
     public function createUser()
     {
-        $sql = "insert into Utilisateur (nom,prenom,logins,email,naissance,pwd) values (:nom,:prenom,:logins,:email,:naissance,MD5(:pwd))";
+        $sql = "insert into utilisateur (nom,prenom,logins,email,naissance,pwd) values (:nom,:prenom,:logins,:email,:naissance,MD5(:pwd))";
         $array = array(
             ":nom"       => $this->nom,
             ":prenom"    => $this->prenom,
@@ -138,7 +125,7 @@ class Utilisateur
 
     public function exist()
     {
-        $sql = "select count(*) as 'nb' from Utilisateur where logins=:logins and email=:email";
+        $sql = "select count(*) as 'nb' from utilisateur where logins=:logins and email=:email";
         $array = array(
             ":email"  => $this->email,
             ":logins" => $this->logins
@@ -159,7 +146,7 @@ class Utilisateur
         if ($tab[0]['nb'] < "1") {
             return false;
         }
-        $sql = "select id,nom,prenom from Utilisateur where logins=:logins and email=:email and pwd=MD5(:mdp) and actif=0";
+        $sql = "select id,nom,prenom from utilisateur where logins=:logins and email=:email and pwd=MD5(:mdp) and actif=0";
         $array = array(
             ":logins" => $this->logins,
             ":email"  => $this->email,
@@ -171,7 +158,7 @@ class Utilisateur
 
     public function getConnexion()
     {
-        $sql = "select * from Utilisateur where logins=:logins and pwd=MD5(:mdp)";
+        $sql = "select * from utilisateur where logins=:logins and pwd=MD5(:mdp)";
         $array = array(
             ":logins" => $this->logins,
             ":mdp"    => $this->mdp
@@ -186,7 +173,7 @@ class Utilisateur
         if ($this->nom == "" || $this->nom == null || $this->prenom === "" || $this->prenom == null || $this->email == "" || $this->email == null || $this->logins == "" || $this->logins == null) {
             return false;
         }
-        $sql = "update Utilisateur set nom=:nom,prenom=:prenom,email=:email where logins=:logins";
+        $sql = "update utilisateur set nom=:nom,prenom=:prenom,email=:email where logins=:logins";
         $array = array(
             ":nom"    => $this->nom,
             ":prenom" => $this->prenom,
@@ -206,7 +193,7 @@ class Utilisateur
 
             return false;
         }
-        $sql = "update Utilisateur set actif=1 where id=:id";
+        $sql = "update utilisateur set actif=1 where id=:id";
         $array = array(
             ":id" => $val[0]["id"]
         );
@@ -253,7 +240,7 @@ class Utilisateur
             header('Location: index.php?err=8');
         }
 
-        $sql = "update Utilisateur set Token=:token where id=:id";
+        $sql = "update utilisateur set token=:token where id=:id";
         $array = array(
             ":token" => $this->token,
             ":id"    => $id
@@ -268,7 +255,7 @@ class Utilisateur
         if ($id == null || $id == 0) {
             header('Location: index.php?err=7');
         }
-        $sql = "select Token from Utilisateur where id=:id";
+        $sql = "select token from utilisateur where id=:id";
         $array = array(
             ":id" => $id
         );
@@ -282,7 +269,7 @@ class Utilisateur
             header('Location: index.php?err=7');
         }
 
-        $sql = "update Utilisateur set Token=:token where id=:id";
+        $sql = "update utilisateur set token=:token where id=:id";
         $array = array(
             ":token" => null,
             ":id"    => $id

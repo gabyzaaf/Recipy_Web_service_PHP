@@ -52,7 +52,7 @@ CREATE TABLE  IF NOT EXISTS favoris (
 
   PRIMARY KEY (id),
   FOREIGN KEY (fidutilisateur) REFERENCES utilisateur(id) ON DELETE CASCADE,
-  FOREIGN KEY (fidrecetted) REFERENCES recette(id) ON DELETE CASCADE
+  FOREIGN KEY (fidrecette) REFERENCES recette(id) ON DELETE CASCADE
 );
 
 /**

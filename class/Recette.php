@@ -14,22 +14,9 @@ class Recette
     private $partage;
     private $fid;
 
-    public function __construct($id = null, $titre = null, $contenu = null, $image = null, $visible = null, $partage = null, $fid = null)
-    {
-        $this->id = $id;
-        $this->titre = $titre;
-        $this->contenu = $contenu;
-        $this->image = $image;
-        $this->visible = $visible;
-        $this->partage = $partage;
-        $this->fid = $fid;
-
-    }
-
-
     public function creation($idUtilisateur)
     {
-        $sql = "insert into Recette(title,contenu,image_lien,visible,partage,fid) values (:title,:contenu,:image_lien,:visible,:partage,:fid)";
+        $sql = "insert into recette(title,contenu,image_lien,visible,partage,fid) values (:title,:contenu,:image_lien,:visible,:partage,:fid)";
         $array = array(
             ":title"      => $this->titre,
             ":contenu"    => $this->contenu,
@@ -51,7 +38,7 @@ class Recette
      */
     public function findByUserId(int $idUtilisateur) : array
     {
-        $sql = "SELECT * FROM Recette WHERE fid = :fid;";
+        $sql = "SELECT * FROM recette WHERE fid = :fid;";
         $params = array(
             ":fid" => $idUtilisateur
         );
@@ -61,7 +48,7 @@ class Recette
 
     public function getRecette($idUtilisateur)
     {
-        $sql = "select * from Recette where fid=:fid and visible=1";
+        $sql = "select * from recette where fid=:fid and visible=1";
         $tabRecette = "";
         $array = array(
             ":fid" => $idUtilisateur
@@ -72,7 +59,7 @@ class Recette
 
     public function getRecetteTitle($title)
     {
-        $sql = "select * from Recette where title=:title and visible=1";
+        $sql = "select * from recette where title=:title and visible=1";
         $tabRecette = "";
         $array = array(
             ":title" => $title
@@ -83,7 +70,7 @@ class Recette
 
     public function visible($idRecette)
     {
-        $sql = "update Recette set visible=0 where id=:id";
+        $sql = "update recette set visible=0 where id=:id";
         $array = array(
             ":id" => $idRecette
         );
@@ -93,7 +80,7 @@ class Recette
 
     public function updateRecette($idRecette, $idUtilisateur, $title, $contenu)
     {
-        $sql = "update Recette set title = :title, contenu = :contenu, image_lien = '', visible = 1, partage = 0, fid = :fid where id = :id;";
+        $sql = "update recette set title = :title, contenu = :contenu, image_lien = '', visible = 1, partage = 0, fid = :fid where id = :id;";
         $array = array(
             ":id"      => $idRecette,
             ":title"   => $title,
@@ -107,7 +94,7 @@ class Recette
 
     public function deleteRecette($idRecette)
     {
-        $sql = "delete from Recette where id = :id";
+        $sql = "delete from recette where id = :id";
         $array = array(
             ":id" => $idRecette
         );
@@ -115,6 +102,3 @@ class Recette
         return Spdo::getInstance()->query($sql, $array);
     }
 }
-
-
-?>

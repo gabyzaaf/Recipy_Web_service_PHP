@@ -1,8 +1,7 @@
 <?php
 ini_set('display_errors', 1);
-class SPdo{
 
-    
+class SPdo{
     private $PDOinstance = null;
     private static $instance = null;
     
@@ -58,5 +57,3 @@ class SPdo{
     
 
 }
-
-?>
