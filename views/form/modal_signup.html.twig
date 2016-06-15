@@ -1,18 +1,3 @@
-<form name="sign_in" action="traitementInscription.php" method="post">
-    <div class="form-group">
-        <label for="register-mail" class="control-label">Login</label>
-        <input type="text" name="sign_in[logins]" class="form-control" id="register-mail"
-               placeholder="Email"/>
-        <span class="help-block"><small>A block of help text that breaks onto a new line and may extend beyond one line.</small></span>
-    </div>
-    <div class="form-group">
-        <label for="register-password" class="control-label">Password</label>
-        <input type="text" name="sign_in[mdp][first]" class="form-control"
-               id="register-password" placeholder="Password"/>
-    </div>
-    <div class="form-group has-danger">
-        <input type="text" name="sign_in[mdp][second]" class="form-control"
-               id="register-repassword" placeholder="Repeat Password"/>
-        <span class="help-block text-danger"><small>Le mot de passe n'est pas identique.</small></span>
-    </div>
-</form>
+{{ form_start(form_sign_up, {'action' : 'traitementInscription.php', 'attr': {'ajax':true}}) }}
+    {{ form_widget(form_sign_up, {'attr': {'class': 'col-md-12'}}) }}
+{{ form_end(form_sign_up) }}

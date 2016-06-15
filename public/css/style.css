@@ -62,3 +62,9 @@ body {
 .n-tooltip + .tooltip > .tooltip-inner {
     background-color: #000000;
 }
+
+@media (min-width: 768px){
+    .modal-sm {
+        width: 350px;
+    }
+}

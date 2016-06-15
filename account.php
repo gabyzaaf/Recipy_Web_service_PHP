@@ -2,19 +2,19 @@
 
 include 'appKernel.php';
 
+use Symfony\Component\Form as Form;
+
 /**
  * Controller : Account
  */
 
-use Symfony\Component\Form as Form;
+if(!isset($_SESSION['user']))
+    header('Location: /index.php');
+
 
 $template = $twig->loadTemplate('page/account.html.twig');
 
-$formFactory = Form\Forms::createFormFactoryBuilder()
-    ->addExtension(new Form\Extension\HttpFoundation\HttpFoundationExtension())
-    ->getFormFactory();
-
-$user = new utilisateur();
+$user = new Utilisateur();
 $user->loadCurrentUser();
 
 /**

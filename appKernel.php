@@ -4,6 +4,8 @@ require_once 'vendor/autoload.php';
 require_once 'class/Utilisateur.php';
 require_once 'class/Recette.php';
 
+use Symfony\Component\Form as Form;
+
 session_start();
 /** INIT HTTP REQUEST MANAGER */
 $request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
@@ -19,3 +21,13 @@ $twig->addExtension(new Twig_Extensions_Extension_Text());
 $twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension(new \Symfony\Component\Translation\Translator('fr')));
 $twig->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension(new \Symfony\Bridge\Twig\Form\TwigRenderer($engine)));
 $twig->addGlobal('request', $request);
+
+$validator = \Symfony\Component\Validator\Validation::createValidator();
+$formFactory = Form\Forms::createFormFactoryBuilder()
+    ->addExtension(new Form\Extension\HttpFoundation\HttpFoundationExtension())
+    ->addExtension(new Form\Extension\Validator\ValidatorExtension($validator))
+    ->getFormFactory();
+
+
+include_once 'signin.php';
+include_once 'signup.php';

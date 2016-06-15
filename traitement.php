@@ -2,6 +2,11 @@
 
 include_once 'appKernel.php';
 
+if(true) {
+    include_once 'signin.php';
+    echo json_encode(['body' => $twig->render('form/modal_signin.html.twig'), 'fail' => $formSignIn]);
+    exit();
+}
 
 if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
     header('Location: index.php?err=1');
@@ -9,7 +14,11 @@ if ((empty($_POST['login'])) || (empty($_POST['pass']))) {
 } else {
     $login = $request->request->get('login');
     $pass = $request->request->get('pass');
-    $user = new Utilisateur(null, null, null, $login, null, 1, null, $pass, 0);
+
+    $user = new Utilisateur();
+    $user->setLogins($login);
+    $user->setMdp($pass);
+
     $arrayUser = $user->getConnexion();
 
     if (empty($arrayUser)) {
