@@ -1,12 +1,16 @@
 <?php
 
+session_start();
+
 require_once 'vendor/autoload.php';
 require_once 'class/Utilisateur.php';
 require_once 'class/Recette.php';
 
 use Symfony\Component\Form as Form;
+use Symfony\Component\HttpFoundation\Request;
+use \Symfony\Component\HttpFoundation\Session\Session;
 
-session_start();
+$session = new \Symfony\Component\HttpFoundation\Session\Session();
 /** INIT HTTP REQUEST MANAGER */
 $request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
 /** INIT TEMPLATING */
@@ -31,3 +35,49 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
 
 include_once 'signin.php';
 include_once 'signup.php';
+
+
+/**
+ * @param Request $request
+ * @param Session $session
+ */
+function initSession(Request $request, Session $session)
+{
+    $login = $request->request->get('login');
+    $pass = $request->request->get('pass');
+
+    $user = new Utilisateur();
+    $user->setLogins($login);
+    $user->setMdp($pass);
+
+    $arrayUser = $user->getConnexion();
+
+    if (empty($arrayUser)) {
+        if ($request->isXmlHttpRequest()) {
+            exit(json_encode(['error' =>  ['id' => 1, 'message' => 'Incorrect username or password.']]));
+        } else {
+            header('Location: index.php?err=' . SessionException::$SESSION_LOGIN_FAILED);
+            exit();
+        }
+    }
+
+    $token = md5(sha1($_POST['login'] . $_POST['pass']) . date_timestamp_get(new DateTime('now')));
+    $user->setToken($token);
+
+    $userData = reset($arrayUser);
+
+    $request->setSession($session->set('user',
+        [
+            'id'     => $userData['id'],
+            'login'  => $userData['logins'],
+            'nom'    => $userData['nom'],
+            'admin'  => $userData['admin'],
+            'prenom' => $userData['prenom'],
+            'email'  => $userData['email'],
+            'token'  => $token
+        ]
+    ));
+
+    header('Location: account.php');
+    exit();
+}

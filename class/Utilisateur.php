@@ -216,37 +216,28 @@ class Utilisateur
 
     }
 
-    /*
+    /**
+     * @param $id
      *
-     *   The ERROR 7 is when you can't get the a good id user
-     *
-     * */
-
-    /*
-     *
-     *   The ERROR 8 is when the token is not good
-     *
-     * */
-
-    public function activeSession($id)
+     * @return bool
+     */
+    public function updateToken(int $id = null) :bool
     {
-
-        if ($id == null || $id == 0) {
-            unset($_SESSION['user']);
-            header('Location: index.php?err=7');
-        }
-        if ($this->token == null) {
-            unset($_SESSION['user']);
-            header('Location: index.php?err=8');
+        if ($id === null) {
+            if ($this->getId()) {
+                $id = $this->getId();
+            } else {
+                return false;
+            }
         }
 
-        $sql = "update utilisateur set token=:token where id=:id";
+        $sql = 'UPDATE utilisateur SET token=:token WHERE id=:id ;';
         $array = array(
             ":token" => $this->token,
             ":id"    => $id
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return !!Spdo::getInstance()->query($sql, $array);
     }
 
     public function checkingToken($id)
@@ -283,7 +274,7 @@ class Utilisateur
      */
     public function getId()
     {
-        return $this->id;
+        return ($this->id > 0) ? $this->id : false;
     }
 
     /**
@@ -397,6 +388,4 @@ class Utilisateur
     {
         $this->logins = $logins;
     }
-
-
 }

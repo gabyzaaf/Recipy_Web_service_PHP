@@ -2,19 +2,34 @@
 
 require_once 'appKernel.php';
 
-use Symfony\Component\Form as Form;
-if(!isset($_SESSION['user'])) {
+use Symfony\Component\Form;
+
+if (!isset($_SESSION['user'])) {
 
     $formSignIn = $formFactory->createBuilder('\Recipy\Form\SignInType')
+        ->setAction('signin.php')
         ->getForm();
 
     $formSignIn->handleRequest($request);
-
-    if ($formSignIn->isSubmitted() && $formSignIn->isValid()) {
-        exit(json_encode(['location' => '/account.php']));
+    
+    if ($formSignIn->isValid()) {
+        initSession($request, $session);
+        if ($request->isXmlHttpRequest()) {
+            exit(json_encode(['location' => '/account.php']));
+        }
+        header('Location: account.php');
     }
 
     $formViewSignIn = $formSignIn->createView();
 
     $twig->addGlobal('form_sign_in', $formViewSignIn);
+
+    if ($request->getRequestUri() == '/'. basename(__FILE__)){
+        if($request->isXmlHttpRequest()) {
+            exit(json_encode(['body' => $twig->render('form/modal_signin.html.twig'), 'fail' => $formSignIn]));
+        } else {
+            header('Location: index.php');
+            exit();
+        }
+    }
 }

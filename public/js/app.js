@@ -24,9 +24,20 @@ function ajaxSubmit(form) {
     $.post($(form).attr('action'), $(form).serialize(), function (data) {
         console.log(data); // todo : has deleted
         data = $.parseJSON(data)
+        console.log(data.body != undefined);
+        console.log(data.error != undefined);
         if (data.location != undefined)
             window.location.replace(data.location);
         if (data.body != undefined)
             $(form).replaceWith(data.body);
+        if (data.error != undefined) {
+            errorId = 'error-' + $(form).attr('name');
+            errorMessage = '<p id="' + errorId + '"class="col-md-12 alert alert-danger">' + data.error.message + '</p>';
+            if ($('#'+errorId).length == 0) {
+                $(form).prepend(errorMessage);
+            } else {
+                $('#'+errorId).replaceWith(errorMessage)
+            }
+        }
     })
 }

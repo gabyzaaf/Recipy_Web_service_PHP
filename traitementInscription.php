@@ -5,7 +5,7 @@ include_once "appKernel.php";
 use Symfony\Component\Form as Form;
 if(true) {
     include_once 'signin.php';
-    echo json_encode(['body' => $twig->render('form/modal_signup.html.twig'), 'fail' => $formSignIn]);
+    echo json_encode(['body' => $twig->render('form/modal_signup.html.twig'), 'fail' => $formSignUp]);
     exit();
 }
 
