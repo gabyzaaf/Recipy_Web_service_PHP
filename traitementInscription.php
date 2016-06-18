@@ -3,6 +3,11 @@
 include_once "appKernel.php";
 
 use Symfony\Component\Form as Form;
+if(true) {
+    include_once 'signin.php';
+    echo json_encode(['body' => $twig->render('form/modal_signup.html.twig'), 'fail' => $formSignUp]);
+    exit();
+}
 
 $template = $twig->loadTemplate('page/account.html.twig');
 
@@ -10,7 +15,7 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
     ->addExtension(new Form\Extension\HttpFoundation\HttpFoundationExtension())
     ->getFormFactory();
 
-$user = new utilisateur();
+$user = new Utilisateur();
 
 /**
  * Controller to My account part

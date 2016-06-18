@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+require_once 'appKernel.php';
 
-unset($_SESSION['user']);
+$session->clear();
 header('Location: /');

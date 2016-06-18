@@ -5,6 +5,8 @@ namespace Recipy\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 
 /**
  * Class UserType
@@ -15,14 +17,16 @@ class SignInType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('logins', Type\TextType::class)
-            ->add('mdp', Type\RepeatedType::class, array(
-                'type'            => Type\PasswordType::class,
-                'options'         => array('attr' => array('class' => 'password-field')),
-                'required'        => true,
-                'first_options'   => array('label' => 'Password'),
-                'second_options'  => array('label' => 'Repeat Password'),
-            ));
+            ->add('logins', Type\TextType::class, [
+                'label' => 'username',
+                'constraints' => [new NotBlank()]
+            ])
+            ->add('mdp', Type\PasswordType::class, array(
+                'required' => true,
+                'label'    => 'Password',
+                'constraints' => [new NotBlank()]
+            ))
+            ->add('remember', Type\CheckboxType::class, array('label' => 'Remeber ME'));
     }
 
     public function getName()

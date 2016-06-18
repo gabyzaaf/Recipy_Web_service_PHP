@@ -2,21 +2,22 @@
 
 include 'appKernel.php';
 
+use Symfony\Component\Form as Form;
+
 /**
  * Controller : Account
  */
 
-use Symfony\Component\Form as Form;
+if($session->get('user') === null)
+    header('Location: /index.php');
+
 
 $template = $twig->loadTemplate('page/account.html.twig');
 
-$formFactory = Form\Forms::createFormFactoryBuilder()
-    ->addExtension(new Form\Extension\HttpFoundation\HttpFoundationExtension())
-    ->getFormFactory();
+/** @var Utilisateur $user */
+$user = $session->get('user');
 
-$user = new utilisateur();
 $user->loadCurrentUser();
-
 /**
  * Controller to My account part
  */
@@ -38,6 +39,6 @@ $formViewAccount = $form->createView();
  */
 
 $recipy = new Recette();
-$recipies = $recipy->findByUserId($_SESSION['user']['id']);
+$recipies = $recipy->findByUserId($user->getId());
 
 echo $template->render(array('form' => $formViewAccount, 'list' => ['recipies' => $recipies]));

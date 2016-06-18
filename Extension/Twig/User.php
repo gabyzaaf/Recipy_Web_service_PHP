@@ -2,6 +2,7 @@
 
 namespace Recipy\Extension\Twig;
 
+use Symfony\Component\HttpFoundation\Session\Session;
 use Twig_Extension;
 
 /**
@@ -10,6 +11,21 @@ use Twig_Extension;
  */
 class User extends Twig_Extension
 {
+    /**
+     * @var Session
+     */
+    protected $session;
+
+    /**
+     * User constructor.
+     *
+     * @param Session $session
+     */
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
 
     /**
      * {@inheritdoc}
@@ -33,14 +49,15 @@ class User extends Twig_Extension
      */
     protected function isLogged() : bool
     {
-        return !!($_SESSION['user']['id'] ?? false);
+        return !!$this->session->get('user')?? false;
     }
 
     /**
      * @return string
      */
-    protected function getUsername() {
-        return $_SESSION['user']['login'] ?? 'unknow';
+    protected function getUsername() :string
+    {
+        return $this->session->get('user')['logins'] ?? 'unknow';
     }
 
     /**
