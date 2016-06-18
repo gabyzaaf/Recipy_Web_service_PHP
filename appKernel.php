@@ -1,6 +1,5 @@
 <?php
 
-session_start();
 
 require_once 'vendor/autoload.php';
 require_once 'class/Utilisateur.php';
@@ -11,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpFoundation\Session\Session;
 
 $session = new \Symfony\Component\HttpFoundation\Session\Session();
+$session->start();
 /** INIT HTTP REQUEST MANAGER */
 $request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
 /** INIT TEMPLATING */
@@ -19,7 +19,7 @@ $twig = new Twig_Environment($loader, array('debug' => true));
 $engine = new \Symfony\Bridge\Twig\Form\TwigRendererEngine(array('bootstrap_3_layout.html.twig'));
 $engine->setEnvironment($twig);
 $twig->addExtension(new Twig_Extension_Debug());
-$twig->addExtension(new \Recipy\Extension\Twig\User());
+$twig->addExtension(new \Recipy\Extension\Twig\User($session));
 $twig->addExtension(new \Recipy\Extension\Twig\Page($request));
 $twig->addExtension(new Twig_Extensions_Extension_Text());
 $twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension(new \Symfony\Component\Translation\Translator('fr')));
@@ -38,45 +38,32 @@ include_once 'signup.php';
 
 
 /**
- * @param Request $request
- * @param Session $session
+ * @param Request     $request
+ * @param Session     $session
+ * @param Utilisateur $user
  */
-function initSession(Request $request, Session $session)
+function initSession(Request $request, Session $session, Utilisateur $user)
 {
-    $login = $request->request->get('login');
-    $pass = $request->request->get('pass');
 
-    $user = new Utilisateur();
-    $user->setLogins($login);
-    $user->setMdp($pass);
-
-    $arrayUser = $user->getConnexion();
-
-    if (empty($arrayUser)) {
+    if (!$user->exist($user)) {
         if ($request->isXmlHttpRequest()) {
-            exit(json_encode(['error' =>  ['id' => 1, 'message' => 'Incorrect username or password.']]));
+            exit(json_encode(['error' => ['id' => $request, 'message' => 'Incorrect username or password.']]));
         } else {
             header('Location: index.php?err=' . SessionException::$SESSION_LOGIN_FAILED);
             exit();
         }
     }
 
-    $token = md5(sha1($_POST['login'] . $_POST['pass']) . date_timestamp_get(new DateTime('now')));
+    $token = md5(sha1($user->getLogins() . $user->getMdp()) . date_timestamp_get(new DateTime('now')));
     $user->setToken($token);
+    $user->saveToken();
+    
+    $session->set('user', $user);
+    $request->setSession($session);
 
-    $userData = reset($arrayUser);
-
-    $request->setSession($session->set('user',
-        [
-            'id'     => $userData['id'],
-            'login'  => $userData['logins'],
-            'nom'    => $userData['nom'],
-            'admin'  => $userData['admin'],
-            'prenom' => $userData['prenom'],
-            'email'  => $userData['email'],
-            'token'  => $token
-        ]
-    ));
+    if ($request->isXmlHttpRequest()) {
+        exit(json_encode(['location' => 'account.php']));
+    }
 
     header('Location: account.php');
     exit();

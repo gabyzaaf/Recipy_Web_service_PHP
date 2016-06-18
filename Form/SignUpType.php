@@ -20,6 +20,7 @@ class SignUpType extends AbstractType
         $builder
             ->add('logins', Type\TextType::class, [
                 'label' => 'username',
+                'required' => true,
                 'constraints' => [new NotBlank()]
             ])
             ->add('mdp', Type\RepeatedType::class, array(
@@ -28,7 +29,7 @@ class SignUpType extends AbstractType
                 'required'       => true,
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
-                'constraints' => [new UserPassword()],
+                'constraints' => [new NotBlank()],
                 'invalid_message' => 'The password fields must match.',
             ));
     }

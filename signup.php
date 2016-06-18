@@ -6,15 +6,20 @@ use Symfony\Component\Form as Form;
 
 if (!isset($_SESSION['user'])) {
 
-    $formSignUp = $formFactory->createBuilder('\Recipy\Form\SignUpType', new Utilisateur())
+    $user = new Utilisateur();
+    $formSignUp = $formFactory->createBuilder('\Recipy\Form\SignUpType', $user)
         ->setAction('signup.php')
         ->getForm();
 
     $formSignUp->handleRequest($request);
 
     if ($formSignUp->isSubmitted() && $formSignUp->isValid()) {
+        if ($user->exist()) {
+            exit(json_encode(['error' => ['id' => $request, 'message' => 'Username already use.']]));
+        }
+        
         $user->createUser();
-        initSession($request, $session);
+        initSession($request, $session, $user);
         if ($request->isXmlHttpRequest()) {
             exit(json_encode(['location' => '/account.php']));
         }
@@ -29,7 +34,7 @@ if (!isset($_SESSION['user'])) {
         exit(json_encode(['body' => $twig->render('form/modal_signup.html.twig'), 'fail' => $formSignUp]));
     }
 
-    if ($request->getRequestUri() == '/'. basename(__FILE__)) {
+    if ($request->getRequestUri() == '/' . basename(__FILE__)) {
         if ($formSignUp->isSubmitted()) {
             exit(json_encode(['body' => $twig->render('form/modal_signup.html.twig'), 'fail' => $formSignUp]));
         } else {

@@ -8,18 +8,16 @@ use Symfony\Component\Form as Form;
  * Controller : Account
  */
 
-dump($_SESSION);
-dump($session->get('user'));
-/*
-if(!isset($_SESSION['user']))
-    header('Location: /index.php');*/
+if($session->get('user') === null)
+    header('Location: /index.php');
 
 
 $template = $twig->loadTemplate('page/account.html.twig');
 
-$user = new Utilisateur();
-$user->loadCurrentUser();
+/** @var Utilisateur $user */
+$user = $session->get('user');
 
+$user->loadCurrentUser();
 /**
  * Controller to My account part
  */
@@ -41,6 +39,6 @@ $formViewAccount = $form->createView();
  */
 
 $recipy = new Recette();
-$recipies = $recipy->findByUserId($_SESSION['user']['id']);
+$recipies = $recipy->findByUserId($user->getId());
 
 echo $template->render(array('form' => $formViewAccount, 'list' => ['recipies' => $recipies]));

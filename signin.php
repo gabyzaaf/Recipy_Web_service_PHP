@@ -5,15 +5,15 @@ require_once 'appKernel.php';
 use Symfony\Component\Form;
 
 if (!isset($_SESSION['user'])) {
-
-    $formSignIn = $formFactory->createBuilder('\Recipy\Form\SignInType')
+    $user = new Utilisateur();
+    $formSignIn = $formFactory->createBuilder('\Recipy\Form\SignInType',$user)
         ->setAction('signin.php')
         ->getForm();
 
     $formSignIn->handleRequest($request);
-    
+
     if ($formSignIn->isValid()) {
-        initSession($request, $session);
+        initSession($request, $session, $user);
         if ($request->isXmlHttpRequest()) {
             exit(json_encode(['location' => '/account.php']));
         }

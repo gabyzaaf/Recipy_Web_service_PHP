@@ -2,34 +2,40 @@
 ini_set('display_errors', 1);
 require_once("Pdo.php");
 
-class Utilisateur
+class Utilisateur implements ArrayAccess
 {
 
-    private $id;
-    private $nom;
-    private $prenom;
-    private $email;
-    private $logins;
-    private $admin;
+    private $id = 0;
+    private $nom = '';
+    private $prenom = '';
+    private $email = '';
+    private $logins = '';
+    private $admin = false;
     private $naissance;
-    private $mdp;
-    private $actif;
-    private $token;
+    private $mdp = '';
+    private $actif = false;
+    private $token = '';
+    private $remember = false;
+
+    public function __construct()
+    {
+        $this->naissance = new DateTime();
+    }
 
     /**
      * @return bool
      */
     public function loadCurrentUser() : bool
     {
-        if (!isset($_SESSION['user']['id']) || !isset($_SESSION['user']['token']))
+        if (!$this->getId() && !$this->getToken()) {
             return false;
+        }
 
-        $users = $this->getCurrentUser($_SESSION['user']['id'], $_SESSION['user']['token']);
-
-        if (empty($users))
+        $user = $this->getCurrentUser($this->getId(), $this->getToken());
+        
+        if (!$user) {
             return false;
-
-        $user = reset($users);
+        }
 
         $this->id = $user['id'];
         $this->nom = $user['nom'];
@@ -45,22 +51,23 @@ class Utilisateur
     }
 
     /**
-     * @param int    $id
-     * @param string $token
-     *
-     * @return Utilisateur
+     * @return array|bool|string
      */
-    public function getCurrentUser(int $id, string $token)
+    public function getCurrentUser()
     {
         $sql = "SELECT * FROM utilisateur WHERE id = :id AND token = :token";
         $array = array(
-            ":id"    => $id,
-            ":token" => $token
+            ":id"    => $this->getId(),
+            ":token" => $this->getToken()
         );
 
-        $dataUsers = Spdo::getInstance()->query($sql, $array);
+        $datas = Spdo::getInstance()->query($sql, $array);
+        if (empty($datas))
+            return false;
 
-        return $dataUsers;
+        $user = reset($datas);
+
+        return $user;
     }
 
     /**
@@ -90,6 +97,24 @@ class Utilisateur
         return Spdo::getInstance()->query($sql, $array);
     }
 
+    /**
+     * @return array|bool|string
+     */
+    public function saveToken()
+    {
+        $sql = "UPDATE utilisateur 
+                SET token = :token
+                WHERE logins = :logins AND mdp = :mdp;";
+
+        $array = array(
+            ":token"  => $this->getToken(),
+            ":logins" => $this->getLogins(),
+            ":mdp"    => $this->getMdp()
+        );
+
+        return Spdo::getInstance()->query($sql, $array);
+    }
+
     public function ajoutStorage()
     {
         $sql = "select ajout(:nom,:prenom,:admin,:logins,:email,:naissance,:pwd)";
@@ -106,9 +131,14 @@ class Utilisateur
         return Spdo::getInstance()->query($sql, $array);
     }
 
-
+    /**
+     * return false if user already exist
+     * @return array|bool|string
+     */
     public function createUser()
     {
+        if ($this->exist())
+            return false;
         $sql = "insert into utilisateur (nom,prenom,logins,email,naissance,pwd) values (:nom,:prenom,:logins,:email,:naissance,MD5(:pwd))";
         $array = array(
             ":nom"       => $this->nom,
@@ -122,18 +152,40 @@ class Utilisateur
         return Spdo::getInstance()->query($sql, $array);
     }
 
-
+    /**
+     * @return array|bool|string
+     */
     public function exist()
     {
-        $sql = "select count(*) as 'nb' from utilisateur where logins=:logins and email=:email";
-        $array = array(
-            ":email"  => $this->email,
-            ":logins" => $this->logins
-        );
+        if ($this->getLogins() === null)
+            return false;
 
-        return Spdo::getInstance()->query($sql, $array);
+        $sql = "SELECT * FROM utilisateur WHERE logins = :logins ;";
+        $query_params = [':logins' => $this->logins];
+
+        return Spdo::getInstance()->query($sql, $query_params);
     }
 
+    /*
+    public function exist(array $params = array())
+    {
+        $sql = "SELECT * FROM utilisateur WHERE ";
+        $query_params = [];
+        $and = false;
+        foreach ($this as $attribute) {
+            if (key_exists($attribute, $params)) {
+                if ($and) {
+                    $sql .= " AND ";
+                }
+                $sql .= $attribute . " = :" . $attribute;
+                $query_params[":" . $attribute] = $params[$attribute];
+                $and = true;
+            }
+        }
+
+        return Spdo::getInstance()->query($sql, $query_params);
+    }
+*/
 
     public function getUtilisateur()
     {
@@ -156,15 +208,20 @@ class Utilisateur
         return Spdo::getInstance()->query($sql, $array);
     }
 
-    public function getConnexion()
+    public function loadUser()
     {
-        $sql = "select * from utilisateur where logins=:logins and pwd=MD5(:mdp)";
+        $sql = "SELECT * FROM utilisateur WHERE logins=:logins AND pwd=MD5(:mdp) LIMIT 1";
         $array = array(
             ":logins" => $this->logins,
             ":mdp"    => $this->mdp
         );
+        $datas = Spdo::getInstance()->query($sql, $array);
 
-        return Spdo::getInstance()->query($sql, $array);
+        foreach ($datas as $attribute => $value) {
+            return $this[$attribute] = $value;
+        }
+
+        return $this;
     }
 
 
@@ -201,19 +258,24 @@ class Utilisateur
         return Spdo::getInstance()->query($sql, $array);
     }
 
-
-    public function getToken()
+    /**
+     * @return string
+     */
+    public function getToken() :string
     {
         return $this->token;
     }
 
-
-    public function setToken($token)
+    /**
+     * @param string $token
+     *
+     * @return Utilisateur
+     */
+    public function setToken(string $token)
     {
-
         $this->token = $token;
 
-
+        return $this;
     }
 
     /**
@@ -270,7 +332,56 @@ class Utilisateur
     }
 
     /**
-     * @return null
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return property_exists(get_called_class(), $offset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        if ($this->offsetExists($offset)) {
+            return $this->$offset;
+        }
+
+        throw new InvalidArgumentException(sprintf('%s:%s property is not defined', get_called_class(), $offset));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        if ($this->offsetExists($offset)) {
+            $setMethodName = sprintf('set%s', ucfirst($offset));
+            if (method_exists(get_called_class(), $setMethodName)) {
+                return $this->$setMethodName($value);
+            } else {
+                $this->$offset = $value;
+            }
+        }
+
+        return false;
+        throw new InvalidArgumentException(sprintf('%s:%s property is not defined', get_called_class(), $offset));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        if ($this->offsetExists($offset))
+            $this->offsetSet($offset, null);
+    }
+
+
+    /**
+     * Return a int
+     * @return int|bool
      */
     public function getId()
     {
@@ -278,91 +389,109 @@ class Utilisateur
     }
 
     /**
-     * @return null
+     * @return string
      */
-    public function getNom()
+    public function getNom() :string
     {
         return $this->nom;
     }
 
     /**
-     * @return null
+     * @return string
      */
-    public function getPrenom()
+    public function getPrenom() : string
     {
         return $this->prenom;
     }
 
     /**
-     * @return null
+     * @return string
      */
-    public function getEmail()
+    public function getEmail() :string
     {
         return $this->email;
     }
 
     /**
-     * @return null
+     * @return string
      */
-    public function getLogins()
+    public function getLogins():string
     {
         return $this->logins;
     }
 
     /**
-     * @return null
+     * @return bool
      */
-    public function getAdmin()
+    public function getAdmin() :bool
     {
-        return $this->admin;
+        return !!$this->admin;
     }
 
     /**
-     * @return null
+     * @return Date
      */
-    public function getNaissance()
+    public function getNaissance() //: DateTime
     {
         return $this->naissance;
     }
 
     /**
-     * @return null
+     * @return bool
      */
-    public function getActif()
+    public function getActif() : bool
     {
-        return $this->actif;
+        return !!$this->actif;
     }
 
     /**
-     * @param null $nom
+     * @param string $nom
+     *
+     * @return Utilisateur
      */
-    public function setNom($nom)
+    public function setNom(string $nom) : Utilisateur
     {
         $this->nom = $nom;
+
+        return $this;
     }
 
     /**
-     * @param null $prenom
+     * @param string $prenom
+     *
+     * @return Utilisateur
      */
-    public function setPrenom($prenom)
+    public function setPrenom(string $prenom): Utilisateur
     {
         $this->prenom = $prenom;
+
+        return $this;
     }
 
     /**
-     * @param null $email
+     * @param string $email
+     *
+     * @return Utilisateur
      */
-    public function setEmail($email)
+    public function setEmail(string $email): Utilisateur
     {
         $this->email = $email;
+
+        return $this;
     }
 
     /**
-     * @param null $naissance
+     * @param $naissance
+     *
+     * @return Utilisateur
      */
-    public function setNaissance($naissance)
+    public function setNaissance($naissance): Utilisateur
     {
+        if (!$naissance instanceof DateTime)
+            $naissance = new DateTime($naissance);
         $this->naissance = $naissance;
+
+        return $this;
     }
 
     /**
@@ -374,18 +503,47 @@ class Utilisateur
     }
 
     /**
-     * @param null $mdp
+     * @param string $mdp
+     *
+     * @return Utilisateur
      */
-    public function setMdp($mdp)
+    public function setMdp(string $mdp): Utilisateur
     {
         $this->mdp = $mdp;
+
+        return $this;
     }
 
     /**
-     * @param null $logins
+     * @param string $logins
+     *
+     * @return Utilisateur
      */
-    public function setLogins($logins)
+    public function setLogins(string $logins): Utilisateur
     {
         $this->logins = $logins;
+
+        return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function getRemember() :bool
+    {
+        return !!$this->remember;
+    }
+
+    /**
+     * @param bool $remember
+     *
+     * @return Utilisateur
+     */
+    public function setRemember(bool $remember) : Utilisateur
+    {
+        $this->remember = $remember;
+
+        return $this;
+    }
+
 }
