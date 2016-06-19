@@ -17,9 +17,18 @@
         </div>
     </a>
     <div class="col-md-2 col-md-offset-1 text-right" style="margin-top: 10px;">
-            <a href="#" class="glyphicon glyphicon-eye-{% if row.visible %}open{% else %}close{% endif %}"
-                  style="line-height: 20px;font-size: 17px; margin-left: 10px;"></a>
-            <a href="#" class="fa fa-share-square{% if row.partage %}-o{% endif %}" aria-hidden="true"
-                  style="line-height: 20px;font-size: 20px; margin-left: 10px;"></a>
+            <a href="#" style="line-height: 20px;font-size: 17px; margin-left: 10px;"><span
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title=""
+                        data-original-title="visibilité"
+                        class="black-tooltip glyphicon glyphicon-eye-{% if row.visible %}open{% else %}close{% endif %}"></a>
+            <a href="#" class="" aria-hidden="true"
+                  style="line-height: 20px;font-size: 20px; margin-left: 10px;"><span
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title=""
+                        data-original-title="Partage ??"
+                        class="black-tooltip fa fa-share-square{% if row.partage %}-o{% endif %}"></span></a>
     </div>
 </div>
