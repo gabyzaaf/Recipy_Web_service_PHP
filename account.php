@@ -20,9 +20,6 @@ if ($user === null
 }
 $template = $twig->loadTemplate('page/account.html.twig');
 
-dump($user);
-dump($_SESSION);
-dump($session->get('user'));
 /**
  * Controller to My account part
  */
