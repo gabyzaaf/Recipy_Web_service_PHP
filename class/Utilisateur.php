@@ -27,11 +27,15 @@ class Utilisateur implements ArrayAccess
      */
     public function loadCurrentUser() : bool
     {
-        if (!$this->getId() && !$this->getToken()) {
+        if(!isset($_SESSION['_sf2_attributes']['user']))
+            return false;
+        $user = $_SESSION['_sf2_attributes']['user'];
+
+        if (!$user['id'] && !$user['token']) {
             return false;
         }
 
-        $user = $this->getCurrentUser($this->getId(), $this->getToken());
+        $user = $this->findByIdAndToken($user['id'], $user['token']);
         
         if (!$user) {
             return false;
@@ -53,7 +57,7 @@ class Utilisateur implements ArrayAccess
     /**
      * @return array|bool|string
      */
-    public function getCurrentUser()
+    public function findByIdAndToken()
     {
         $sql = "SELECT * FROM utilisateur WHERE id = :id AND token = :token";
         $array = array(
@@ -208,6 +212,9 @@ class Utilisateur implements ArrayAccess
         return Spdo::getInstance()->query($sql, $array);
     }
 
+    /**
+     * @return Utilisateur $this
+     */
     public function loadUser()
     {
         $sql = "SELECT * FROM utilisateur WHERE logins=:logins AND pwd=MD5(:mdp) LIMIT 1";
@@ -217,10 +224,10 @@ class Utilisateur implements ArrayAccess
         );
         $datas = Spdo::getInstance()->query($sql, $array);
 
-        foreach ($datas as $attribute => $value) {
-            return $this[$attribute] = $value;
+        foreach (current($datas) as $attribute => $value) {
+            $this[$attribute] = $value;
         }
-
+        
         return $this;
     }
 
@@ -544,6 +551,30 @@ class Utilisateur implements ArrayAccess
         $this->remember = $remember;
 
         return $this;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param boolean $admin
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
+    }
+
+    /**
+     * @param boolean $actif
+     */
+    public function setActif($actif)
+    {
+        $this->actif = $actif;
     }
 
 }

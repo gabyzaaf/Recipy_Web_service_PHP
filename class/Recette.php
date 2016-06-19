@@ -1,6 +1,8 @@
 <?php
 
-ini_set('display_errors', 1);
+use \Symfony\Component\Validator\Mapping\ClassMetadata;
+use \Symfony\Component\Validator\Constraints as Asserts;
+
 require_once("Pdo.php");
 
 class Recette
@@ -14,16 +16,57 @@ class Recette
     private $partage;
     private $fid;
 
-    public function creation($idUtilisateur)
+    /**
+     * Use to the validation data form
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $sql = "insert into recette(title,contenu,image_lien,visible,partage,fid) values (:title,:contenu,:image_lien,:visible,:partage,:fid)";
+        $metadata->addPropertyConstraint(
+            'titre',
+            new Asserts\Length(
+                [
+                    'min'        => 2,
+                    'max'        => 50,
+                    'minMessage' => 'Your first name must be at least {{ limit }} characters long',
+                    'maxMessage' => 'Your first name cannot be longer than {{ limit }} characters',
+                ]
+            ))
+            ->addPropertyConstraint('image', new Asserts\File(
+                [
+                    'maxSize'          => '5M',
+                    'mimeTypes'        => ['image/jpeg', 'image/gif', 'image/png', 'image/tiff'],
+                    'mimeTypesMessage' => 'Please upload a valid Image'
+                ]
+            ));
+    }
+
+    /**
+     * @return bool
+     */
+    public function exist()
+    {
+        $sql = "SELECT * FROM recette
+        WHERE title =:title AND fid = :fid ;";
         $array = array(
-            ":title"      => $this->titre,
-            ":contenu"    => $this->contenu,
-            ":image_lien" => $this->image,
-            ":visible"    => $this->visible,
-            ":partage"    => $this->partage,
-            ":fid"        => $idUtilisateur
+            ":title"      => $this->getTitre(),
+            ":fid"        => $this->getFid()
+        );
+
+        return !!Spdo::getInstance()->query($sql, $array);
+    }
+
+    public function add()
+    {
+        $sql = "INSERT INTO recette(title, contenu, image_lien, visible, fid) 
+                VALUES (:title, :contenu, :image_lien, :visible, :fid)";
+        $array = array(
+            ":title"      => $this->getTitre(),
+            ":contenu"    => $this->getContenu(),
+            ":image_lien" => null,//$this->getImage(),
+            ":visible"    => $this->getVisible() ? 1 : 0,
+            ":fid"        => $this->getFid()
         );
 
         return Spdo::getInstance()->query($sql, $array);
@@ -101,4 +144,117 @@ class Recette
 
         return Spdo::getInstance()->query($sql, $array);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTitre()
+    {
+        return $this->titre;
+    }
+
+    /**
+     * @param mixed $titre
+     */
+    public function setTitre($titre)
+    {
+        $this->titre = $titre;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContenu()
+    {
+        return $this->contenu;
+    }
+
+    /**
+     * @param mixed $contenu
+     */
+    public function setContenu($contenu)
+    {
+        $this->contenu = $contenu;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
+
+    /**
+     * @param mixed $visible
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPartage()
+    {
+        return $this->partage;
+    }
+
+    /**
+     * @param mixed $partage
+     */
+    public function setPartage($partage)
+    {
+        $this->partage = $partage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFid()
+    {
+        return $this->fid <= 0 ? $_SESSION['_sf2_attributes']['user']['id'] : $this->fid;
+    }
+
+    /**
+     * @param mixed $fid
+     */
+    public function setFid($fid)
+    {
+        $this->fid = $fid;
+    }
+
 }

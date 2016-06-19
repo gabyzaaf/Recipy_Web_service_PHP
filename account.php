@@ -8,16 +8,21 @@ use Symfony\Component\Form as Form;
  * Controller : Account
  */
 
-if($session->get('user') === null)
-    header('Location: /index.php');
-
-
-$template = $twig->loadTemplate('page/account.html.twig');
-
 /** @var Utilisateur $user */
 $user = $session->get('user');
 
-$user->loadCurrentUser();
+if ($user === null
+    || !$user instanceof Utilisateur
+    || !$user->loadCurrentUser()
+) {
+    $session->clear();
+    header('Location: /index.php');
+}
+$template = $twig->loadTemplate('page/account.html.twig');
+
+dump($user);
+dump($_SESSION);
+dump($session->get('user'));
 /**
  * Controller to My account part
  */

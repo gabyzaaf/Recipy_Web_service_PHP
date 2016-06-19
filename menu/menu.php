@@ -1,14 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zaafranigabriel
- * Date: 08/03/2016
- * Time: 16:20
- */
-
-if(empty($_SESSION)){
-    header('Location: index.php?err=1');
-}
 
 ?>
 <html>
