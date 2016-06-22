@@ -1,8 +1,7 @@
 <div class="row list-group-item" style="
-        background: url('{{ row.image_lien }}') no-repeat left center;
-        background-size: 25%;">
-    <a href="#" class="food-list col-xs-9"
-    >
+        background: url('{{ row.image }}') no-repeat left center;
+        background-size: 25%;" data-ajax="true" data-target="recipeEdit.php" data-toggle="{{ row.id }}">
+    <div href="#" class="food-list col-xs-9">
         <div class="row">
             <div class="col-md-12">
                 <span class="recipy-title">{{ row.title }}</span>
@@ -15,7 +14,7 @@
                 </div>
             </div>
         </div>
-    </a>
+    </div>
     <div class="col-md-2 col-md-offset-1 text-right" style="margin-top: 10px;">
             <a href="#" style="line-height: 20px;font-size: 17px; margin-left: 10px;"><span
                         data-toggle="tooltip"
