@@ -108,7 +108,7 @@ class Utilisateur implements ArrayAccess
     {
         $sql = "UPDATE utilisateur 
                 SET token = :token
-                WHERE logins = :logins AND mdp = :mdp;";
+                WHERE logins = :logins AND pwd = MD5(:mdp);";
 
         $array = array(
             ":token"  => $this->getToken(),
@@ -145,12 +145,12 @@ class Utilisateur implements ArrayAccess
             return false;
         $sql = "insert into utilisateur (nom,prenom,logins,email,naissance,pwd) values (:nom,:prenom,:logins,:email,:naissance,MD5(:pwd))";
         $array = array(
-            ":nom"       => $this->nom,
-            ":prenom"    => $this->prenom,
-            ":logins"    => $this->logins,
-            ":email"     => $this->email,
-            ":naissance" => $this->naissance,
-            ":pwd"       => $this->mdp
+            ":nom"       => $this->getNom(),
+            ":prenom"    => $this->getPrenom(),
+            ":logins"    => $this->getLogins(),
+            ":email"     => $this->getEmail(),
+            ":naissance" => date('Y-m-d', $this->getNaissance()->getTimestamp()),
+            ":pwd"       => $this->getMdp()
         );
 
         return Spdo::getInstance()->query($sql, $array);
@@ -225,9 +225,11 @@ class Utilisateur implements ArrayAccess
         $datas = Spdo::getInstance()->query($sql, $array);
 
         foreach (current($datas) as $attribute => $value) {
+            if($attribute == 'pwd')
+                $attribute = 'mdp';
             $this[$attribute] = $value;
         }
-        
+
         return $this;
     }
 
@@ -278,8 +280,10 @@ class Utilisateur implements ArrayAccess
      *
      * @return Utilisateur
      */
-    public function setToken(string $token)
+    public function setToken($token)
     {
+        if(!is_string($token))
+            $token = '';
         $this->token = $token;
 
         return $this;
@@ -436,9 +440,9 @@ class Utilisateur implements ArrayAccess
     }
 
     /**
-     * @return Date
+     * @return DateTime
      */
-    public function getNaissance() //: DateTime
+    public function getNaissance() : DateTime
     {
         return $this->naissance;
     }

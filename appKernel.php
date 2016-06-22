@@ -25,10 +25,8 @@ $twig->addExtension(new \Recipy\Extension\Twig\Page($request));
 $twig->addExtension(new Twig_Extensions_Extension_Text());
 $twig->addExtension(new Extension\TranslationExtension(new \Symfony\Component\Translation\Translator('fr')));
 $twig->addExtension(new Extension\FormExtension(new \Symfony\Bridge\Twig\Form\TwigRenderer($engine)));
-$twig->addGlobal('app', [
-    'session' => $session,
-    'request' => $request
-]);
+$twig->addGlobal('request', $request);
+$twig->addGlobal('app', ['session' => $session,]);
 
 /** Enable validation by static method in Entity */
 /** @var \Symfony\Component\Validator\ValidatorBuilder $validator */
@@ -64,8 +62,7 @@ function initSession(Request $request, Session $session, Utilisateur $user)
     $token = md5(sha1($user->getLogins() . $user->getMdp()) . date_timestamp_get(new DateTime('now')));
     $user->setToken($token);
     $user->saveToken();
-
-
+    
     $session->set('user', $user->loadUser());
     $request->setSession($session);
 
