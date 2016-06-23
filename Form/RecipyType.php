@@ -19,6 +19,7 @@ class RecipyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        dump($builder);
         $builder
             ->add('titre', Type\TextType::class, [
                     'label'       => 'Title',
@@ -27,9 +28,10 @@ class RecipyType extends AbstractType
                 ]
             )
             ->add('contenu', Type\TextareaType::class)
-            ->add('image', Type\FileType::class, [
+            ->add('file', Type\FileType::class, [
                 'attr' => ['accept' => 'image/*'] // todo : add js to manage this, doesn't work to chrome ( image/gif )
             ])
+            ->add('image', Type\HiddenType::class)
             ->add('visible', Type\CheckboxType::class, ['required' => false, 'value' => true])
 //            ->add('partage', Type\CheckboxType::class)//->add('type', Type\FileType::class)
         ;

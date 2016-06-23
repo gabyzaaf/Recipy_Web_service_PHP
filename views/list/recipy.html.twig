@@ -16,18 +16,18 @@
         </div>
     </div>
     <div class="col-md-2 col-md-offset-1 text-right" style="margin-top: 10px;">
-            <a href="#" style="line-height: 20px;font-size: 17px; margin-left: 10px;"><span
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title=""
-                        data-original-title="visibilité"
-                        class="black-tooltip glyphicon glyphicon-eye-{% if row.visible %}open{% else %}close{% endif %}"></a>
-            <a href="#" class="" aria-hidden="true"
-                  style="line-height: 20px;font-size: 20px; margin-left: 10px;"><span
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title=""
-                        data-original-title="Partage ??"
-                        class="black-tooltip fa fa-share-square{% if row.partage %}-o{% endif %}"></span></a>
+        <a href="#" style="line-height: 20px;font-size: 17px; margin-left: 10px;"><span
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title=""
+                    data-original-title="visibilité"
+                    class="black-tooltip glyphicon glyphicon-eye-{% if row.visible %}open{% else %}close{% endif %}"></a>
+        <a href="recipeEdit.php?id={{ row.id }}" class="" aria-hidden="true"
+           style="line-height: 20px;font-size: 20px; margin-left: 10px;"><span
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title=""
+                    data-original-title="Edit"
+                    class="black-tooltip glyphicon glyphicon-{% if row.id %}pencil{% endif %}"></span></a>
     </div>
 </div>

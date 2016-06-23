@@ -16,6 +16,9 @@ class Recette
     private $partage;
     private $fid;
 
+    /** @var \Symfony\Component\HttpFoundation\File\File */
+    public $file = null;
+
     /**
      * Use to the validation data form
      *
@@ -50,8 +53,8 @@ class Recette
         $sql = "SELECT * FROM recette
         WHERE title =:title AND fid = :fid ;";
         $array = array(
-            ":title"      => $this->getTitre(),
-            ":fid"        => $this->getFid()
+            ":title" => $this->getTitre(),
+            ":fid"   => $this->getFid()
         );
 
         return !!Spdo::getInstance()->query($sql, $array);
@@ -64,7 +67,7 @@ class Recette
         $array = array(
             ":title"      => $this->getTitre(),
             ":contenu"    => $this->getContenu(),
-            ":image_lien" => null,//$this->getImage(),
+            ":image_lien" => $this->getImage(),
             ":visible"    => $this->getVisible() ? 1 : 0,
             ":fid"        => $this->getFid()
         );
@@ -121,14 +124,26 @@ class Recette
         return Spdo::getInstance()->query($sql, $array);
     }
 
-    public function updateRecette($idRecette, $idUtilisateur, $title, $contenu)
+    /**
+     * @return array|bool|string
+     */
+    public function update()
     {
-        $sql = "update recette set title = :title, contenu = :contenu, image_lien = '', visible = 1, partage = 0, fid = :fid where id = :id;";
+        $sql = "UPDATE recette 
+          SET title = :title,
+            contenu = :contenu,
+            image_lien = :image, 
+            visible = :visible,
+            fid = :fid 
+          WHERE id = :id;";
+
         $array = array(
-            ":id"      => $idRecette,
-            ":title"   => $title,
-            ":contenu" => $contenu,
-            ":fid"     => $idUtilisateur
+            ":id"      => $this->getId(),
+            ":title"   => $this->getTitre(),
+            ":contenu" => $this->getContenu(),
+            ":image"   => $this->getImage(),
+            ":visible" => $this->getVisible(),
+            ":fid"     => $this->getFid()
         );
 
         return Spdo::getInstance()->query($sql, $array);
@@ -198,7 +213,7 @@ class Recette
      */
     public function getImage()
     {
-        return $this->image;
+        return sprintf('http://lorempicsum.com/futurama/350/200/%d', srand(9) + 1);
     }
 
     /**
