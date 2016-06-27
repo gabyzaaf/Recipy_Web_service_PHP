@@ -4,17 +4,21 @@ use \Symfony\Component\Validator\Mapping\ClassMetadata;
 use \Symfony\Component\Validator\Constraints as Asserts;
 
 require_once("Pdo.php");
+require_once("AbstractEntity.php");
 
-class Recette
+class Recette extends AbstractEntity
 {
 
-    private $id;
-    private $titre;
-    private $contenu;
-    private $image;
-    private $visible;
-    private $partage;
-    private $fid;
+    protected $id;
+    protected $title;
+    protected $contenu;
+    protected $image;
+    protected $visible;
+    protected $partage;
+    protected $fid;
+
+    /** @var \Symfony\Component\HttpFoundation\File\File */
+    public $file = null;
 
     /**
      * Use to the validation data form
@@ -24,7 +28,7 @@ class Recette
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint(
-            'titre',
+            'title',
             new Asserts\Length(
                 [
                     'min'        => 2,
@@ -42,6 +46,19 @@ class Recette
             ));
     }
 
+    public function load($id){
+        $data = $this->find($id);
+        
+        if(empty($data))
+            return $this;
+
+        foreach (current($data) as $attribute => $value) {
+            $this[$attribute] = $value;
+        }
+
+        return $this;
+        
+    }
     /**
      * @return bool
      */
@@ -50,21 +67,45 @@ class Recette
         $sql = "SELECT * FROM recette
         WHERE title =:title AND fid = :fid ;";
         $array = array(
-            ":title"      => $this->getTitre(),
-            ":fid"        => $this->getFid()
+            ":title" => $this->getTitle(),
+            ":fid"   => $this->getFid()
         );
 
         return !!Spdo::getInstance()->query($sql, $array);
     }
 
+    /**
+     * @return array|bool|string
+     */
     public function add()
     {
         $sql = "INSERT INTO recette(title, contenu, image_lien, visible, fid) 
                 VALUES (:title, :contenu, :image_lien, :visible, :fid)";
         $array = array(
-            ":title"      => $this->getTitre(),
+            ":title"      => $this->getTitle(),
             ":contenu"    => $this->getContenu(),
-            ":image_lien" => null,//$this->getImage(),
+            ":image_lien" => $this->getImage(),
+            ":visible"    => $this->getVisible() ? 1 : 0,
+            ":fid"        => $this->getFid()
+        );
+
+        return Spdo::getInstance()->query($sql, $array);
+    }
+
+    /**
+     * @return array|bool|string
+     */
+    public function save()
+    {
+        $sql = "UPDATE recette 
+                SET title = :title, contenu = :contenu, image_lien = :image_lien, 
+                visible = :visible, fid = :fid 
+                WHERE id = :id";
+        $array = array(
+            ":id"      => $this->getId(),
+            ":title"      => $this->getTitle(),
+            ":contenu"    => $this->getContenu(),
+            ":image_lien" => $this->getImage(),
             ":visible"    => $this->getVisible() ? 1 : 0,
             ":fid"        => $this->getFid()
         );
@@ -89,10 +130,26 @@ class Recette
         return Spdo::getInstance()->query($sql, $params);
     }
 
+    /**
+     * @param $id
+     *
+     * @return array|bool|string
+     */
+    public function find($id) : array
+    {
+        $sql = "SELECT * FROM recette WHERE id=:id LIMIT 1 ;";
+
+        $array = array(
+            ":id" => $id
+        );
+
+        return Spdo::getInstance()->query($sql, $array);
+    }
+
     public function getRecette($idUtilisateur)
     {
         $sql = "select * from recette where fid=:fid and visible=1";
-        $tabRecette = "";
+
         $array = array(
             ":fid" => $idUtilisateur
         );
@@ -100,12 +157,17 @@ class Recette
         return Spdo::getInstance()->query($sql, $array);
     }
 
-    public function getRecetteTitle($title)
+    /**
+     * @param $title
+     *
+     * @return array|bool|string
+     */
+    public function findByTitle($title)
     {
-        $sql = "select * from recette where title=:title and visible=1";
-        $tabRecette = "";
+        $sql = "SELECT * FROM recette WHERE title LIKE :title AND visible=1";
+
         $array = array(
-            ":title" => $title
+            ":title" => '%' . $title . '%'
         );
 
         return Spdo::getInstance()->query($sql, $array);
@@ -121,14 +183,26 @@ class Recette
         return Spdo::getInstance()->query($sql, $array);
     }
 
-    public function updateRecette($idRecette, $idUtilisateur, $title, $contenu)
+    /**
+     * @return array|bool|string
+     */
+    public function update()
     {
-        $sql = "update recette set title = :title, contenu = :contenu, image_lien = '', visible = 1, partage = 0, fid = :fid where id = :id;";
+        $sql = "UPDATE recette 
+          SET title = :title,
+            contenu = :contenu,
+            image_lien = :image, 
+            visible = :visible,
+            fid = :fid 
+          WHERE id = :id;";
+
         $array = array(
-            ":id"      => $idRecette,
-            ":title"   => $title,
-            ":contenu" => $contenu,
-            ":fid"     => $idUtilisateur
+            ":id"      => $this->getId(),
+            ":title"   => $this->getTitle(),
+            ":contenu" => $this->getContenu(),
+            ":image"   => $this->getImage(),
+            ":visible" => $this->getVisible(),
+            ":fid"     => $this->getFid()
         );
 
         return Spdo::getInstance()->query($sql, $array);
@@ -164,17 +238,17 @@ class Recette
     /**
      * @return mixed
      */
-    public function getTitre()
+    public function getTitle()
     {
-        return $this->titre;
+        return $this->title;
     }
 
     /**
-     * @param mixed $titre
+     * @param mixed $title
      */
-    public function setTitre($titre)
+    public function setTitle($title)
     {
-        $this->titre = $titre;
+        $this->title = $title;
     }
 
     /**
@@ -198,7 +272,7 @@ class Recette
      */
     public function getImage()
     {
-        return $this->image;
+        return sprintf('http://lorempicsum.com/futurama/350/200/%d', srand(9) + 1);
     }
 
     /**
@@ -214,7 +288,7 @@ class Recette
      */
     public function getVisible()
     {
-        return $this->visible;
+        return ($this->visible == true);
     }
 
     /**
@@ -247,6 +321,10 @@ class Recette
     public function getFid()
     {
         return $this->fid <= 0 ? $_SESSION['_sf2_attributes']['user']['id'] : $this->fid;
+    }
+
+    public function getCurrentOwn() {
+        return $this->fid;
     }
 
     /**

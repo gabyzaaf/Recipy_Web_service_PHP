@@ -1,21 +1,22 @@
 <?php
 ini_set('display_errors', 1);
 require_once("Pdo.php");
+require_once("AbstractEntity.php");
 
-class Utilisateur implements ArrayAccess
+class Utilisateur extends AbstractEntity
 {
 
-    private $id = 0;
-    private $nom = '';
-    private $prenom = '';
-    private $email = '';
-    private $logins = '';
-    private $admin = false;
-    private $naissance;
-    private $mdp = '';
-    private $actif = false;
-    private $token = '';
-    private $remember = false;
+    protected $id = 0;
+    protected $nom = '';
+    protected $prenom = '';
+    protected $email = '';
+    protected $logins = '';
+    protected $admin = false;
+    protected $naissance;
+    protected $mdp = '';
+    protected $actif = false;
+    protected $token = '';
+    protected $remember = false;
 
     public function __construct()
     {
@@ -27,7 +28,7 @@ class Utilisateur implements ArrayAccess
      */
     public function loadCurrentUser() : bool
     {
-        if(!isset($_SESSION['_sf2_attributes']['user']))
+        if (!isset($_SESSION['_sf2_attributes']['user']))
             return false;
         $user = $_SESSION['_sf2_attributes']['user'];
 
@@ -36,7 +37,7 @@ class Utilisateur implements ArrayAccess
         }
 
         $user = $this->findByIdAndToken($user['id'], $user['token']);
-        
+
         if (!$user) {
             return false;
         }
@@ -108,7 +109,7 @@ class Utilisateur implements ArrayAccess
     {
         $sql = "UPDATE utilisateur 
                 SET token = :token
-                WHERE logins = :logins AND mdp = :mdp;";
+                WHERE logins = :logins AND pwd = MD5(:mdp);";
 
         $array = array(
             ":token"  => $this->getToken(),
@@ -145,29 +146,36 @@ class Utilisateur implements ArrayAccess
             return false;
         $sql = "insert into utilisateur (nom,prenom,logins,email,naissance,pwd) values (:nom,:prenom,:logins,:email,:naissance,MD5(:pwd))";
         $array = array(
-            ":nom"       => $this->nom,
-            ":prenom"    => $this->prenom,
-            ":logins"    => $this->logins,
-            ":email"     => $this->email,
-            ":naissance" => $this->naissance,
-            ":pwd"       => $this->mdp
+            ":nom"       => $this->getNom(),
+            ":prenom"    => $this->getPrenom(),
+            ":logins"    => $this->getLogins(),
+            ":email"     => $this->getEmail(),
+            ":naissance" => date('Y-m-d', $this->getNaissance()->getTimestamp()),
+            ":pwd"       => $this->getMdp()
         );
 
         return Spdo::getInstance()->query($sql, $array);
     }
 
     /**
+     * @param bool $withPass
+     *
      * @return array|bool|string
      */
-    public function exist()
+    public function exist($withPass = false)
     {
-        if ($this->getLogins() === null)
+        if ($this->getLogins() === null || ($withPass && $this->getMdp() === null))
             return false;
 
-        $sql = "SELECT * FROM utilisateur WHERE logins = :logins ;";
+        $sql = "SELECT * FROM utilisateur WHERE logins = :logins ";
         $query_params = [':logins' => $this->logins];
 
-        return Spdo::getInstance()->query($sql, $query_params);
+        if ($withPass) {
+            $sql .= " AND pwd = MD5(:pwd)";
+            $query_params = $query_params + [':pwd' => $this->getMdp()];
+        }
+        
+        return !!Spdo::getInstance()->query($sql, $query_params);
     }
 
     /*
@@ -224,10 +232,13 @@ class Utilisateur implements ArrayAccess
         );
         $datas = Spdo::getInstance()->query($sql, $array);
 
-        foreach (current($datas) as $attribute => $value) {
-            $this[$attribute] = $value;
-        }
-        
+        if (!empty($datas))
+            foreach (current($datas) as $attribute => $value) {
+                if ($attribute == 'pwd')
+                    $attribute = 'mdp';
+                $this[$attribute] = $value;
+            }
+
         return $this;
     }
 
@@ -278,8 +289,10 @@ class Utilisateur implements ArrayAccess
      *
      * @return Utilisateur
      */
-    public function setToken(string $token)
+    public function setToken($token)
     {
+        if (!is_string($token))
+            $token = '';
         $this->token = $token;
 
         return $this;
@@ -339,54 +352,6 @@ class Utilisateur implements ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function offsetExists($offset)
-    {
-        return property_exists(get_called_class(), $offset);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetGet($offset)
-    {
-        if ($this->offsetExists($offset)) {
-            return $this->$offset;
-        }
-
-        throw new InvalidArgumentException(sprintf('%s:%s property is not defined', get_called_class(), $offset));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetSet($offset, $value)
-    {
-        if ($this->offsetExists($offset)) {
-            $setMethodName = sprintf('set%s', ucfirst($offset));
-            if (method_exists(get_called_class(), $setMethodName)) {
-                return $this->$setMethodName($value);
-            } else {
-                $this->$offset = $value;
-            }
-        }
-
-        return false;
-        throw new InvalidArgumentException(sprintf('%s:%s property is not defined', get_called_class(), $offset));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetUnset($offset)
-    {
-        if ($this->offsetExists($offset))
-            $this->offsetSet($offset, null);
-    }
-
-
-    /**
      * Return a int
      * @return int|bool
      */
@@ -436,9 +401,9 @@ class Utilisateur implements ArrayAccess
     }
 
     /**
-     * @return Date
+     * @return DateTime
      */
-    public function getNaissance() //: DateTime
+    public function getNaissance() : DateTime
     {
         return $this->naissance;
     }

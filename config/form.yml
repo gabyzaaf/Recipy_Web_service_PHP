@@ -1,0 +1,16 @@
+parameters:
+    form.recipeType.class: Recipy\Form\RecipyType
+    form.search.class: Recipy\Form\SearchType
+services:
+    form.recipe_edit:
+        class:     %form.recipeType.class%
+        arguments: ['@session']
+        tags:
+            - { name: form.type, alias: 'recipe' }
+
+    form.search:
+            class:     %form.search.class%
+            tags:
+                - { name: form.type, alias: 'search' }
+        #calls:
+        #    - [setMailer, ['@mailer']]

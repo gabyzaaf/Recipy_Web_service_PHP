@@ -3,6 +3,7 @@
 include 'appKernel.php';
 
 use Symfony\Component\Form as Form;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Controller : RecipyAdd
@@ -16,28 +17,33 @@ if ($user === null
     || !$user->loadCurrentUser()
 ) {
     $session->clear();
-    header('Location: /index.php');
+    exit(new RedirectResponse('/index.php'));
 }
-$template = $twig->loadTemplate('page/recipy/add.html.twig');
+$template = $twig->loadTemplate('page/recipy/edit.html.twig');
 
 
 /**
  * Controller to Add Recipy
  */
+if($request->get('id') === null) {
+    exit(new RedirectResponse($request->headers->get('referer')));
+}
 
 $recipy = new Recette();
+$recipy->load($request->get('id'));
+
 $form = $formFactory->createBuilder(\Recipy\Form\RecipyType::class, $recipy)
     ->add('save', Form\Extension\Core\Type\SubmitType::class,
-        ['label' => 'Add', 'attr' => ['class' => 'btn btn-default pull-right']])
+        ['label' => 'Save', 'attr' => ['class' => 'btn btn-default pull-right']])
     ->add('return_list', Form\Extension\Core\Type\SubmitType::class,
         ['label' => 'Return to list',
          'validation_groups' => false,
          'attr' =>
-            [
-                'formnovalidate' => 'formnovalidate',
-                'class' => 'btn btn-default pull-right',
-                'style' => 'margin-right: 10px;'
-            ]
+             [
+                 'formnovalidate' => 'formnovalidate',
+                 'class' => 'btn btn-default pull-right',
+                 'style' => 'margin-right: 10px;'
+             ]
         ])
     ->getForm();
 
@@ -48,15 +54,15 @@ if ($form->get('return_list')->isClicked()) {
 }
 
 if ($form->isValid()) {
-    if ($recipy->exist()) {
+    if (!$recipy->exist()) {
         $session->getFlashBag()
-            ->add('error', 'This recipe is exists.');
-    } else if (!$recipy->add()) {
+            ->add('error', 'This recipe has not found.');
+    } else if (!$recipy->save()) {
         $session->getFlashBag()
-            ->add('error', 'An error occurred while trying to add.');
+            ->add('error', 'An error occurred while trying to save.');
     } else {
         $session->getFlashBag()
-            ->add('success', 'This recipe has been insert.');
+            ->add('success', 'This recipe has been save.');
     }
 }
 
