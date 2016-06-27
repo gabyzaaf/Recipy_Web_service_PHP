@@ -13,7 +13,7 @@ if (!isset($_SESSION['user'])) {
     $formSignIn->handleRequest($request);
 
     if ($formSignIn->isValid()) {
-        initSession($request, $session, $user);
+        initSession($request, $session, $user, ['withPass' => true]);
         if ($request->isXmlHttpRequest()) {
             exit(json_encode(['location' => '/account.php']));
         }

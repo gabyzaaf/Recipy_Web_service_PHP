@@ -26,7 +26,7 @@ $template = $twig->loadTemplate('page/recipy/add.html.twig');
  */
 
 $recipy = new Recette();
-$form = $formFactory->createBuilder('\Recipy\Form\RecipyType', $recipy)
+$form = $formFactory->createBuilder(\Recipy\Form\RecipyType::class, $recipy)
     ->add('save', Form\Extension\Core\Type\SubmitType::class,
         ['label' => 'Add', 'attr' => ['class' => 'btn btn-default pull-right']])
     ->add('return_list', Form\Extension\Core\Type\SubmitType::class,

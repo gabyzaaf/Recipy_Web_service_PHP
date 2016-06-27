@@ -30,10 +30,11 @@ if($request->get('id') === null) {
 }
 
 $recipy = new Recette();
-$form = $formFactory->createBuilder('\Recipy\Form\RecipyType', $recipy)
+$recipy->load($request->get('id'));
 
+$form = $formFactory->createBuilder(\Recipy\Form\RecipyType::class, $recipy)
     ->add('save', Form\Extension\Core\Type\SubmitType::class,
-        ['label' => 'Add', 'attr' => ['class' => 'btn btn-default pull-right']])
+        ['label' => 'Save', 'attr' => ['class' => 'btn btn-default pull-right']])
     ->add('return_list', Form\Extension\Core\Type\SubmitType::class,
         ['label' => 'Return to list',
          'validation_groups' => false,
