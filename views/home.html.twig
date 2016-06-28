@@ -9,7 +9,9 @@
             </form>
         </div>
     </div><!-- /.container -->
+    <div class="col-md-offset-2 col-md-8">
 
-
+        {% include 'list/list.html.twig' with {'target': 'recipies', 'row_type': 'public-recipy'} %}
+    </div>
     {% include 'modal/modal.html.twig' with {'body': 'modal/login'} %}
 {% endblock %}
