@@ -34,29 +34,30 @@ class RecipyType extends AbstractType
     {
         $user = $this->session->get('user');
         $data = $options['data'];
-
+        $forEdit = $user->getId() == ($data->getCurrentOwn() ?? false) ?? false;
         $builder
             ->add('title', Type\TextType::class, [
                     'label'       => 'Title',
                     'required'    => true,
                     'constraints' => [new NotBlank()],
-                    'disabled' => $user->getId() == ($data->getCurrentOwn() ?? false) ?? false,
+                    'disabled'    => $forEdit,
                 ]
             )
             ->add('contenu', Type\TextareaType::class)
             ->add('file', Type\FileType::class, [
-                'attr' => ['accept' => 'image/*'] // todo : add js to manage this, doesn't work to chrome ( image/gif )
+                'attr'     => ['accept' => 'image/*'], // todo : add js to manage this, doesn't work to chrome ( image/gif )
+                'required' => !$forEdit,
             ])
             ->add('image', Type\HiddenType::class, ['required' => !!$user->getId()])
-            ->add('visible', Type\CheckboxType::class, ['required' => false, 'value' => true])
-//            ->add('partage', Type\CheckboxType::class)//->add('type', Type\FileType::class)
+            ->add('visible', Type\CheckboxType::class, ['required' => false, 'value' => true])//            ->add('partage', Type\CheckboxType::class)//->add('type', Type\FileType::class)
         ;
     }
 
     /**
      * @return string
      */
-    public function getParent() {
+    public function getParent()
+    {
         return 'Symfony\Component\Form\Extension\Core\Type\FormType';
     }
 

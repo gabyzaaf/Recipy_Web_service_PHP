@@ -11,19 +11,24 @@ $formSearch = $formFactory->createBuilder()
     ->getForm();
 if(!empty( $request->get('q')))
 $formSearch->submit(['q' => $request->get('q')]);
+
+$recipe = new Recette();
 $list = [];
+$recipies = [];
 
 if ($formSearch->isValid()) {
     $formDatas = $formSearch->getData();
-    $recipe = new Recette();
     $recipies = $recipe->findByTitle($formDatas['q']);
     if ($request->isXmlHttpRequest()) {
         $template = $twig->loadTemplate('list/recipy.html.twig');
         exit(json_encode(['body' => $template->render(['list' => ['recipies' => $recipies]])]));
     }
 
-    $list = ['recipies' => $recipies];
+} else {
+    $recipies = $recipe->findAllVisible();
 }
+
+$list = ['recipies' => $recipies];
 
 $formViewSignIn = $formSearch->createView();
 

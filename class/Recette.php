@@ -46,6 +46,11 @@ class Recette extends AbstractEntity
             ));
     }
 
+    /**
+     * @param $id
+     *
+     * @return $this
+     */
     public function load($id){
         $data = $this->find($id);
         
@@ -57,8 +62,8 @@ class Recette extends AbstractEntity
         }
 
         return $this;
-        
     }
+
     /**
      * @return bool
      */
@@ -146,6 +151,15 @@ class Recette extends AbstractEntity
         return Spdo::getInstance()->query($sql, $array);
     }
 
+    public function findAllVisible($isVisible = true){
+        $sql = "SELECT * FROM recette WHERE visible = :visible";
+
+        $array = array(
+            ":visible" => !!$isVisible
+        );
+
+        return Spdo::getInstance()->query($sql, $array);
+    }
     public function getRecette($idUtilisateur)
     {
         $sql = "select * from recette where fid=:fid and visible=1";

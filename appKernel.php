@@ -12,6 +12,7 @@ use Symfony\Bridge\Twig\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Translation;
 
 $session = new \Symfony\Component\HttpFoundation\Session\Session();
 $session->start();
@@ -19,13 +20,23 @@ $session->start();
 /** INIT HTTP REQUEST MANAGER */
 $request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
 
+
 /** INIT CONTAINER */
 $container = new ContainerBuilder();
-$containerLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
+$ymlLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
 $container->set('container', $container);
 $container->set('session', $session);
-$containerLoader->load('form.yml');
-$containerLoader->load('twig_extension.yml');
+$container->set('request', $request);
+$ymlLoader->load('form.yml');
+$ymlLoader->load('twig_extension.yml');
+
+/**  */
+/** LOAD TRANSLATION */
+$translator = new Translation\Translator('fr_FR');
+$translator->addLoader('yaml', new Translation\Loader\YamlFileLoader());
+$translator->setFallbackLocales(array('fr_FR'));
+$translator->setLocale('fr_FR');
+$translator->addResource('yaml', 'config/messages.fr.yml', 'fr_FR');
 
 /** INIT TEMPLATING */
 $loader = new Twig_Loader_Filesystem(['./views/', './vendor/symfony/twig-bridge/Resources/views/Form/']);
@@ -34,12 +45,16 @@ $engine = new \Symfony\Bridge\Twig\Form\TwigRendererEngine(array('bootstrap_3_la
 $engine->setEnvironment($twig);
 $twig->addExtension(new Twig_Extension_Debug());
 $twig->addExtension($container->get('twig.extension.user'));
-$twig->addExtension(new \Recipy\Extension\Twig\Page($request));
+$twig->addExtension($container->get('twig.extension.page'));
+$twig->addExtension(new Extension\TranslationExtension($translator));
 $twig->addExtension(new Twig_Extensions_Extension_Text());
-$twig->addExtension(new Extension\TranslationExtension(new \Symfony\Component\Translation\Translator('fr')));
 $twig->addExtension(new Extension\FormExtension(new \Symfony\Bridge\Twig\Form\TwigRenderer($engine)));
 $twig->addGlobal('request', $request);
-$twig->addGlobal('app', ['session' => $session,]);
+$twig->addGlobal('app', [
+    'session'    => $session,
+    'request'    => $request,
+    'translator' => $translator,
+]);
 
 /** Enable validation by static method in Entity */
 /** @var \Symfony\Component\Validator\ValidatorBuilder $validator */
@@ -65,7 +80,7 @@ include_once 'search.php';
  */
 function initSession(Request $request, Session $session, Utilisateur $user, array $options = [])
 {
-    
+
     if (!$user->exist($options['withPass']?? false)) {
         if ($request->isXmlHttpRequest()) {
             exit(json_encode(['error' => ['id' => $request, 'message' => 'Incorrect username or password.']]));

@@ -1,6 +1,16 @@
+parameters:
+    extension.twig.user.class: Recipy\Extension\Twig\User
+    extension.twig.page.class: Recipy\Extension\Twig\Page
+
 services:
     twig.extension.user:
-       class: 'Recipy\Extension\Twig\User'
+       class: '%extension.twig.user.class%'
        arguments: [ '@session' ]
        tags:
           - { name: twig.extension }
+
+    twig.extension.page:
+           class: '%extension.twig.page.class%'
+           arguments: [ '@request' ]
+           tags:
+              - { name: twig.extension }
