@@ -1,7 +1,11 @@
 <?php
-require_once("Pdo.php");
-
-
+require_once("pdo.php");
+/**
+ * Created by PhpStorm.
+ * User: zaafranigabriel
+ * Date: 01/03/2016
+ * Time: 21:23
+ */
 class Noter
 {
 
@@ -49,3 +53,6 @@ class Noter
 
 
 }
+
+
+?>

@@ -1,352 +1,140 @@
 <?php
 
-use \Symfony\Component\Validator\Mapping\ClassMetadata;
-use \Symfony\Component\Validator\Constraints as Asserts;
+ini_set('display_errors', 1);
+require_once("pdo.php");
 
-require_once("Pdo.php");
-require_once("AbstractEntity.php");
+class Recette{
 
-class Recette extends AbstractEntity
+private $id;
+private $autreId;
+private $titre;
+private $contenu;
+private $image;
+private $visible;
+private $partage;
+private $type;
+private $fid;
+
+public function __construct($id=NULL,$titre=NULL,$contenu=NULL,$image=NULL,$visible=NULL,$partage=NULL,$type=NULL,$fid=NULL)
 {
-
-    protected $id;
-    protected $title;
-    protected $contenu;
-    protected $image;
-    protected $visible;
-    protected $partage;
-    protected $fid;
-
-    /** @var \Symfony\Component\HttpFoundation\File\File */
-    public $file = null;
-
-    /**
-     * Use to the validation data form
-     *
-     * @param ClassMetadata $metadata
-     */
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata->addPropertyConstraint(
-            'title',
-            new Asserts\Length(
-                [
-                    'min'        => 2,
-                    'max'        => 50,
-                    'minMessage' => 'Your first name must be at least {{ limit }} characters long',
-                    'maxMessage' => 'Your first name cannot be longer than {{ limit }} characters',
-                ]
-            ))
-            ->addPropertyConstraint('image', new Asserts\File(
-                [
-                    'maxSize'          => '5M',
-                    'mimeTypes'        => ['image/jpeg', 'image/gif', 'image/png', 'image/tiff'],
-                    'mimeTypesMessage' => 'Please upload a valid Image'
-                ]
-            ));
-    }
-
-    /**
-     * @param $id
-     *
-     * @return $this
-     */
-    public function load($id){
-        $data = $this->find($id);
-        
-        if(empty($data))
-            return $this;
-
-        foreach (current($data) as $attribute => $value) {
-            $this[$attribute] = $value;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function exist()
-    {
-        $sql = "SELECT * FROM recette
-        WHERE title =:title AND fid = :fid ;";
-        $array = array(
-            ":title" => $this->getTitle(),
-            ":fid"   => $this->getFid()
-        );
-
-        return !!Spdo::getInstance()->query($sql, $array);
-    }
-
-    /**
-     * @return array|bool|string
-     */
-    public function add()
-    {
-        $sql = "INSERT INTO recette(title, contenu, image_lien, visible, fid) 
-                VALUES (:title, :contenu, :image_lien, :visible, :fid)";
-        $array = array(
-            ":title"      => $this->getTitle(),
-            ":contenu"    => $this->getContenu(),
-            ":image_lien" => $this->getImage(),
-            ":visible"    => $this->getVisible() ? 1 : 0,
-            ":fid"        => $this->getFid()
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    /**
-     * @return array|bool|string
-     */
-    public function save()
-    {
-        $sql = "UPDATE recette 
-                SET title = :title, contenu = :contenu, image_lien = :image_lien, 
-                visible = :visible, fid = :fid 
-                WHERE id = :id";
-        $array = array(
-            ":id"      => $this->getId(),
-            ":title"      => $this->getTitle(),
-            ":contenu"    => $this->getContenu(),
-            ":image_lien" => $this->getImage(),
-            ":visible"    => $this->getVisible() ? 1 : 0,
-            ":fid"        => $this->getFid()
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    /**
-     * Return all recipies by id user
-     *
-     * @param $idUtilisateur
-     *
-     * @return array|bool|string
-     */
-    public function findByUserId(int $idUtilisateur) : array
-    {
-        $sql = "SELECT * FROM recette WHERE fid = :fid;";
-        $params = array(
-            ":fid" => $idUtilisateur
-        );
-
-        return Spdo::getInstance()->query($sql, $params);
-    }
-
-    /**
-     * @param $id
-     *
-     * @return array|bool|string
-     */
-    public function find($id) : array
-    {
-        $sql = "SELECT * FROM recette WHERE id=:id LIMIT 1 ;";
-
-        $array = array(
-            ":id" => $id
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    public function findAllVisible($isVisible = true){
-        $sql = "SELECT * FROM recette WHERE visible = :visible";
-
-        $array = array(
-            ":visible" => !!$isVisible
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-    public function getRecette($idUtilisateur)
-    {
-        $sql = "select * from recette where fid=:fid and visible=1";
-
-        $array = array(
-            ":fid" => $idUtilisateur
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    /**
-     * @param $title
-     *
-     * @return array|bool|string
-     */
-    public function findByTitle($title)
-    {
-        $sql = "SELECT * FROM recette WHERE title LIKE :title AND visible=1";
-
-        $array = array(
-            ":title" => '%' . $title . '%'
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    public function visible($idRecette)
-    {
-        $sql = "update recette set visible=0 where id=:id";
-        $array = array(
-            ":id" => $idRecette
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    /**
-     * @return array|bool|string
-     */
-    public function update()
-    {
-        $sql = "UPDATE recette 
-          SET title = :title,
-            contenu = :contenu,
-            image_lien = :image, 
-            visible = :visible,
-            fid = :fid 
-          WHERE id = :id;";
-
-        $array = array(
-            ":id"      => $this->getId(),
-            ":title"   => $this->getTitle(),
-            ":contenu" => $this->getContenu(),
-            ":image"   => $this->getImage(),
-            ":visible" => $this->getVisible(),
-            ":fid"     => $this->getFid()
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-
-    public function deleteRecette($idRecette)
-    {
-        $sql = "delete from recette where id = :id";
-        $array = array(
-            ":id" => $idRecette
-        );
-
-        return Spdo::getInstance()->query($sql, $array);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param mixed $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getContenu()
-    {
-        return $this->contenu;
-    }
-
-    /**
-     * @param mixed $contenu
-     */
-    public function setContenu($contenu)
-    {
-        $this->contenu = $contenu;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getImage()
-    {
-        return sprintf('http://lorempicsum.com/futurama/350/200/%d', srand(9) + 1);
-    }
-
-    /**
-     * @param mixed $image
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVisible()
-    {
-        return ($this->visible == true);
-    }
-
-    /**
-     * @param mixed $visible
-     */
-    public function setVisible($visible)
-    {
-        $this->visible = $visible;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPartage()
-    {
-        return $this->partage;
-    }
-
-    /**
-     * @param mixed $partage
-     */
-    public function setPartage($partage)
-    {
-        $this->partage = $partage;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFid()
-    {
-        return $this->fid <= 0 ? $_SESSION['_sf2_attributes']['user']['id'] : $this->fid;
-    }
-
-    public function getCurrentOwn() {
-        return $this->fid;
-    }
-
-    /**
-     * @param mixed $fid
-     */
-    public function setFid($fid)
-    {
-        $this->fid = $fid;
-    }
+	$this->id = $id;
+	$this->titre = $titre;
+	$this->contenu = $contenu;
+	$this->image = $image;
+	$this->visible = $visible;
+	$this->partage = $partage;
+	$this->type = $type;
+	$this->fid = $fid;
 
 }
+
+
+public function creation($idUtilisateur){
+	$sql = "insert into Recette(title,contenu,image_lien,visible,partage,fid) values (:title,:contenu,:image_lien,:visible,:partage,:fid)";
+	$array = array(
+			":title"=>$this->titre,
+			":contenu"=>$this->contenu,
+			":image_lien"=>$this->image,
+			":visible"=>$this->visible,
+			":partage"=>$this->partage,
+			":fid"=>$idUtilisateur
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function getRecette($idUtilisateur){
+	$sql = "select * from Recette where fid=:fid and visible=1";
+	$tabRecette="";
+	$array = array(
+			":fid"=>$idUtilisateur
+		);
+	
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function getRecetteInfo($idUtilisateur, $title){
+	$sql = "select * from Recette where fid=:fid and visible=1 and title=:title";
+	$tabRecette="";
+	$array = array(
+			":title"=>$title,
+			":fid"=>$idUtilisateur
+		);
+	
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function getRecetteTitle($idUser, $title){
+	$sql = "select * from Recette where title=:title and visible=1 and fid=:fid";
+	$tabRecette="";
+	$array = array(
+			":fid"=>$idUser,
+			":title"=>$title
+		);
+	
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function getRecetteExist($title, $idUtilisateur){
+	$sql = "select * from Recette where title=:title and fid=:fid";
+	$array = array(
+			":title"=>$title,
+			":fid"=>$idUtilisateur
+		);
+	
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function visible($idRecette){
+	$sql = "update Recette set visible=0 where id=:id";
+	$array = array(
+		":id"=>$idRecette
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function insertRecette($title, $contenu, $fileToUpload, $idUtilisateur){
+	$sql = "insert into Recette(title,contenu,image_lien,visible,partage,fid) values (:title,:contenu, :image_lien, 1, 0,:fid)";
+	$array = array(
+			":title"=>$title,
+			":contenu"=>$contenu,
+			":image_lien"=>$fileToUpload,
+			":fid"=>$idUtilisateur
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function updateRecette($idRecette, $idUtilisateur, $title, $contenu, $fileToUpload){
+	$sql = "update Recette set title = :title, contenu = :contenu, image_lien = :image, visible = 1, partage = 0, fid = :fid where id = :id;";
+	$array = array(
+			":id"=>$idRecette,
+			":title"=>$title,
+			":contenu"=>$contenu,
+			":image"=>$fileToUpload,
+			":fid"=>$idUtilisateur
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function updateRecetteNoPicture($idRecette, $idUtilisateur, $title, $contenu){
+	$sql = "update Recette set title = :title, contenu = :contenu, visible = 1, partage = 0, fid = :fid where id = :id;";
+	$array = array(
+			":id"=>$idRecette,
+			":title"=>$title,
+			":contenu"=>$contenu,
+			":fid"=>$idUtilisateur
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+
+public function deleteRecette($idUtilisateur, $title){
+	$sql = "delete from Recette where title = :title and fid = :fid";
+	$array = array(
+			":title"=>$title,
+			":fid"=>$idUtilisateur
+		);
+	return Spdo::getInstance()->query($sql,$array);
+}
+}
+
+
+?>

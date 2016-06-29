@@ -13,7 +13,6 @@
 
 </head>
 <body>
-<center>
     <form method="post" onsubmit="return InscriptionValidation()" action="traitementInscription.php">
         <table>
             <tr><td><label>nom :</label></td><td><input type="text" name="name"></td></tr>
@@ -36,15 +35,11 @@
                 <td><label>mot de passe : </label></td><td><input type="password" name="mdp"></td>
             </tr>
             <tr>
-                <td><label>Veuillez ressaisir votre mot de passe : </label></td><td><input type="password" name="mdp2"></td>
-            </tr>
-            <tr>
                 <td><input type="submit"></td>
             </tr>
         </table>
 
     </form>
-</center>
 <script src="verification.js"></script>
 </body>
 

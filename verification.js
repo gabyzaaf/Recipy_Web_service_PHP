@@ -11,6 +11,7 @@
             alert('erreur veuillez verifier vos données');
             return false;
         }else{
+            alert('tout est verifié');
             return true;
         }
     }
@@ -30,14 +31,11 @@
  */
 function InscriptionValidation() {
 
-    if (document.getElementsByName("name")[0].value == "" || document.getElementsByName("lastname")[0].value == "" || document.getElementsByName("login")[0].value == "" || document.getElementsByName("email")[0].value == "" || document.getElementsByName("email2")[0].value == "" || document.getElementsByName("born")[0].value == "" || document.getElementsByName("mdp")[0].value == "" || document.getElementsByName("mdp2")[0].value == "") {
+    if (document.getElementsByName("name")[0].value == "" || document.getElementsByName("lastname")[0].value == "" || document.getElementsByName("login")[0].value == "" || document.getElementsByName("email")[0].value == "" || document.getElementsByName("email2")[0].value == "" || document.getElementsByName("born")[0].value == "" || document.getElementsByName("mdp")[0].value == "") {
         alert('Veuillez saisir tous les champs');
         return false;
     } else if (document.getElementsByName("email")[0].value.length != document.getElementsByName("email2")[0].value.length) {
-        alert('vos email doivent etre identiques');
-        return false;
-    }else if(document.getElementsByName("mdp")[0].value !=document.getElementsByName("mdp2")[0].value){
-        alert('vos mot de passe doivent etre identique');
+        alert('vos mot de passe doivent etre identiques');
         return false;
     } else {
         if (!stringCompare(document.getElementsByName("email")[0].value, document.getElementsByName("email2")[0].value)) {

@@ -7,13 +7,13 @@ session_start();
  * Date: 03/03/2016
  * Time: 18:36
  */
-if(empty($_SESSION['user'])){
+if(empty($_SESSION)){
     session_destroy();
     header('Location: index.php?err=1');
 }
 
 $recette = new Recette(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-$var = $recette->getRecette($_SESSION['user']["id"]);
+$var = $recette->getRecette($_SESSION["id"]);
 
 ?>
 

@@ -46,12 +46,12 @@ require_once("class/Recette.php");
 						<option selected="selected" disabled="disabled">---Choisir une recette---</option>
 						<?php
 						$recette = new Recette();
-						$tableau = $recette->getRecette($_SESSION['user']['id']);
+						$tableau = $recette->getRecette($_SESSION['id']);
 
 						for ($i=0;$i<count($tableau);$i++)
 						{
 							?>
-							<option value="<?php echo $tableau[$i]['title']; ?>"> <?php echo $tableau[$i]['title']; ?></option>
+							<option name="title" value="<?php echo $tableau[$i]['title']; ?>"> <?php echo $tableau[$i]['title']; ?></option>
 							<?php
 						}
 
