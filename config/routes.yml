@@ -1,0 +1,4 @@
+# routes.yml
+route1:
+    path:     /foo
+    defaults: { _controller: 'MyController::fooAction' }

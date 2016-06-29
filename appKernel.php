@@ -26,11 +26,14 @@ $container = new ContainerBuilder();
 $ymlLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
 $container->set('container', $container);
 $container->set('session', $session);
+$container->set('user', $session->get('user')?? new Utilisateur());
 $container->set('request', $request);
 $ymlLoader->load('form.yml');
 $ymlLoader->load('twig_extension.yml');
 
-/**  */
+/** SECURITY */
+require_once 'security.php';
+
 /** LOAD TRANSLATION */
 $translator = new Translation\Translator('fr_FR');
 $translator->addLoader('yaml', new Translation\Loader\YamlFileLoader());
