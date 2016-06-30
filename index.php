@@ -1,14 +1,12 @@
 <?php
 
 require_once 'appKernel.php';
-/** @var Utilisateur $user */
 
-$user = $session->get('user');
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
-if ($user === null
-    || !$user instanceof Utilisateur
-    || !$user->loadCurrentUser()
-) {
+/** @var AuthorizationChecker $authorizationChecker */
+$authorizationChecker = $container->get('authorizationChecker');
+if (!$authorizationChecker->isGranted('ROLE_USER')) {
     $session->clear();
 }
 

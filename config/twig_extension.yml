@@ -1,6 +1,8 @@
 parameters:
     extension.twig.user.class: Recipy\Extension\Twig\User
     extension.twig.page.class: Recipy\Extension\Twig\Page
+    extension.routing.class: Symfony\Bridge\Twig\Extension\RoutingExtension
+    routing.urlgenerator.class: Symfony\Component\Routing\Generator\UrlGenerator
 
 services:
     twig.extension.user:
@@ -10,7 +12,17 @@ services:
           - { name: twig.extension }
 
     twig.extension.page:
-           class: '%extension.twig.page.class%'
-           arguments: [ '@request' ]
-           tags:
-              - { name: twig.extension }
+       class: '%extension.twig.page.class%'
+       arguments: [ '@request' ]
+       tags:
+          - { name: twig.extension }
+
+    twig.extension.routing:
+       class: '%extension.routing.class%'
+       arguments: [ '@routing.urlgenerator' ]
+       tags:
+          - { name: twig.extension }
+
+    routing.urlgenerator:
+       class: '%routing.urlgenerator.class%'
+       arguments: [ '@collectionRoutes','@requestContext' ]

@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 require_once("Pdo.php");
 require_once("AbstractEntity.php");
 
-class Utilisateur extends AbstractEntity
+class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\Core\User\UserInterface
 {
 
     protected $id = 0;
@@ -542,4 +542,25 @@ class Utilisateur extends AbstractEntity
         $this->actif = $actif;
     }
 
+    /********************************************************/
+
+    public function getRoles() {
+        $roles = ['ROLE_USER'];
+        if ($this->getAdmin())
+            $roles += ['ROLE_ADMIN'];
+
+        return $roles;
+    }
+    public function getPassword() {
+        return $this->getMdp();
+    }
+    public function getSalt() {
+        return;
+    }
+    public function getUsername() {
+        return $this->getLogins();
+    }
+    public function eraseCredentials() {
+        return;
+    }
 }
