@@ -17,22 +17,35 @@ use Symfony\Component\Translation;
 $session = new \Symfony\Component\HttpFoundation\Session\Session();
 $session->start();
 
-/** INIT HTTP REQUEST MANAGER */
-$request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
-
-
 /** INIT CONTAINER */
 $container = new ContainerBuilder();
 $ymlLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
 $container->set('container', $container);
-$container->set('session', $session);
-$container->set('user', $session->get('user')?? new Utilisateur());
-$container->set('request', $request);
-$ymlLoader->load('form.yml');
-$ymlLoader->load('twig_extension.yml');
+
 
 /** ROUTER */
 require_once 'route.php';
+
+/** INIT HTTP REQUEST MANAGER */
+$request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
+
+try {
+    $attributes = $matcher->match($request->getPathInfo());
+    $request->attributes->replace($attributes);
+} catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
+    //
+} catch (\Symfony\Component\Routing\Exception\MethodNotAllowedException $e) {
+    //
+}
+
+/** SET CONTAINER DATA */
+$container->set('session', $session);
+$container->set('user', $session->get('user')?? new Utilisateur());
+$container->set('request', $request);
+$container->set('request_uri', $container->get('request')->getRequestUri());
+$ymlLoader->load('form.yml');
+$ymlLoader->load('twig_extension.yml');
+
 
 /** SECURITY */
 require_once 'security.php';

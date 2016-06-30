@@ -1,3 +1,45 @@
 # routes.yml
+index:
+    path:     /
+logout:
+    path:     /signout
+    defaults: { _controller: signout }
 search:
-    path:     /index.php
+    path:     /search/
+    defaults: { _controller: search, q: null, page: 1}
+search_datas:
+    path:     /search/{q}/
+    defaults: { _controller: search, page: 1}
+    methods: [GET]
+search_datas_pagination:
+    path:     /search/{q}/{page}
+    defaults: { _controller: search}
+    methods: [GET]
+    requirements:
+        page:  \d+
+
+account:
+    path:     /account/
+    defaults: { _controller: account, section: 'account', page: 1}
+account_section:
+    path:     /account/{section}/
+    defaults: { _controller: account, section: 'account', page: 1}
+account_section_page:
+    path:     /account/{section}/{page}
+    defaults: { _controller: account, section: 'account', page: 1}
+    requirements:
+            page:  \d+
+
+recipe_edit:
+    path:     /recipe/{id}
+    defaults: { _controller: recipeEdit }
+    requirements:
+                page:  \d+
+recipe_add:
+    path:     /recipe/add
+    defaults: { _controller: recipeAdd }
+recipe_show:
+    path:     /recipe/{id}/{title}
+    defaults: { _controller: recipe }
+    requirements:
+            id:  \d+

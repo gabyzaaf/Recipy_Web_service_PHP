@@ -24,7 +24,7 @@
                 <div class="tab-pane{% if isSection('favourite') %} active{% endif %}" id="favorite" role="tabpanel">
                     favorites
                 </div>
-                {% include 'tabs/recipy.html.twig' %}
+                {% include 'tabs/recipy.html.twig' with {'route_': 'account_section_page', 'params': {'section' :'recipy'} } %}
             </div>
 
         </div>

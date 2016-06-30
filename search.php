@@ -31,7 +31,6 @@ if ($formSearch->isValid()) {
         return $recipe->$closure(true, 2, $page ?? 0);
     };
     $recipies = $test('findAllVisible');
-    dump($recipies);
 }
 
 $list = ['recipies' => ['values' => $recipies, 'pagination' => ['current' => $page ?? 0, 'count' => 0]]];

@@ -12,9 +12,8 @@ $locator = new FileLocator(array(__DIR__ . '/config'));
 $loader = new YamlFileLoader($locator);
 $collection = $loader->load('routes.yml');
 
-$requestContext = new RequestContext('/');
+$requestContext = new RequestContext('/index.php');
+$matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($collection, $requestContext);
 
-$container->set('collectionRoutes', $collection);
-$container->set('requestContext', $requestContext);
-
-//$router->match('/foo/bar');
+$container->set('router', $collection);
+$container->set('context', $requestContext);

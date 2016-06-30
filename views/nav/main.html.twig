@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php"> {{ 'project_name' | trans }}</a>
+            <a class="navbar-brand" href="{{ path('index') }}"> {{ 'project_name' | trans }}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -40,10 +40,10 @@
                                   data-original-title="Vous êtes connecté en tant que"
                                   class="black-tooltip">{{ user_username() | default('unknow') }}</span></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="account.php?section=account">{{ 'my_account' | trans }}</a></li>
-                        <li><a href="account.php?section=favourite">{{ 'my_favourites' | trans }}</a></li>
-                        <li><a href="account.php?section=recipy">{{ 'my_recipes' | trans }}</a></li>
-                        <li><a href="signout.php">{{ 'logout' | trans }}</a></li>
+                        <li><a href="{{ path('account', {'section': 'account'}) }}">{{ 'my_account' | trans }}</a></li>
+                        <li><a href="{{ path('account_section', {'section': 'favourite'}) }}">{{ 'my_favourites' | trans }}</a></li>
+                        <li><a href="{{ path('account_section', {'section': 'recipy'}) }}">{{ 'my_recipes' | trans }}</a></li>
+                        <li><a href="{{ path('logout') }}.php">{{ 'logout' | trans }}</a></li>
                     </ul>
                     {% endif %}
                 </li>

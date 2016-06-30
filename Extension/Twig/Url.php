@@ -9,7 +9,7 @@ use Twig_Extension;
  * Class Page
  * @package Recipy\Extension\Twig
  */
-class Page extends Twig_Extension
+class Url extends Twig_Extension
 {
     /** @var Request */
     protected $request;
@@ -30,8 +30,7 @@ class Page extends Twig_Extension
     public function getFunctions() : array
     {
         return [
-            new \Twig_SimpleFunction('isSection', [$this, 'isSection']),
-            new \Twig_SimpleFunction('hasSection', [$this, 'hasSection'])
+            new \Twig_SimpleFunction('queryString', [$this, 'queryString']),
         ]; 
     }
 
@@ -40,17 +39,9 @@ class Page extends Twig_Extension
      *
      * @return bool
      */
-    public function isSection(string $section = null) : bool
+    public function queryString(string $section = null) : bool
     {
-        return $this->request->attributes->get('section') == $section;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasSection() : bool
-    {
-        return !!($this->request->attributes->get('section') ?? false);
+        return $this->request->query->get('section') == $section;
     }
 
     /**
@@ -60,6 +51,6 @@ class Page extends Twig_Extension
      */
     public function getName() : string
     {
-        return 'page';
+        return 'url';
     }
 }
