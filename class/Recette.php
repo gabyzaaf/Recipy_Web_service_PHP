@@ -51,10 +51,11 @@ class Recette extends AbstractEntity
      *
      * @return $this
      */
-    public function load($id){
+    public function load($id)
+    {
         $data = $this->find($id);
-        
-        if(empty($data))
+
+        if (empty($data))
             return $this;
 
         foreach (current($data) as $attribute => $value) {
@@ -107,7 +108,7 @@ class Recette extends AbstractEntity
                 visible = :visible, fid = :fid 
                 WHERE id = :id";
         $array = array(
-            ":id"      => $this->getId(),
+            ":id"         => $this->getId(),
             ":title"      => $this->getTitle(),
             ":contenu"    => $this->getContenu(),
             ":image_lien" => $this->getImage(),
@@ -151,15 +152,19 @@ class Recette extends AbstractEntity
         return Spdo::getInstance()->query($sql, $array);
     }
 
-    public function findAllVisible($isVisible = true){
+    public function findAllVisible($isVisible = true, $limit = 10, $position = 0)
+    {
         $sql = "SELECT * FROM recette WHERE visible = :visible";
-
         $array = array(
             ":visible" => !!$isVisible
         );
 
+        if ($limit) {
+            $sql .= " LIMIT $position, $limit ";
+        }
         return Spdo::getInstance()->query($sql, $array);
     }
+
     public function getRecette($idUtilisateur)
     {
         $sql = "select * from recette where fid=:fid and visible=1";
@@ -337,7 +342,8 @@ class Recette extends AbstractEntity
         return $this->fid <= 0 ? $_SESSION['_sf2_attributes']['user']['id'] : $this->fid;
     }
 
-    public function getCurrentOwn() {
+    public function getCurrentOwn()
+    {
         return $this->fid;
     }
 

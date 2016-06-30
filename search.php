@@ -15,6 +15,7 @@ $formSearch->submit(['q' => $request->get('q')]);
 $recipe = new Recette();
 $list = [];
 $recipies = [];
+$limitNode = 2;
 
 if ($formSearch->isValid()) {
     $formDatas = $formSearch->getData();
@@ -25,10 +26,15 @@ if ($formSearch->isValid()) {
     }
 
 } else {
-    $recipies = $recipe->findAllVisible();
+    $page = $page ?? 0;
+    $test = function($closure) use ($recipe, $page){
+        return $recipe->$closure(true, 2, $page ?? 0);
+    };
+    $recipies = $test('findAllVisible');
+    dump($recipies);
 }
 
-$list = ['recipies' => $recipies];
+$list = ['recipies' => ['values' => $recipies, 'pagination' => ['current' => $page ?? 0, 'count' => 0]]];
 
 $formViewSignIn = $formSearch->createView();
 
