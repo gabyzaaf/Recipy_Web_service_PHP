@@ -31,6 +31,9 @@ $container->set('request', $request);
 $ymlLoader->load('form.yml');
 $ymlLoader->load('twig_extension.yml');
 
+/** ROUTER */
+require_once 'route.php';
+
 /** SECURITY */
 require_once 'security.php';
 
@@ -49,6 +52,7 @@ $engine->setEnvironment($twig);
 $twig->addExtension(new Twig_Extension_Debug());
 $twig->addExtension($container->get('twig.extension.user'));
 $twig->addExtension($container->get('twig.extension.page'));
+$twig->addExtension($container->get('twig.extension.routing'));
 $twig->addExtension(new Extension\TranslationExtension($translator));
 $twig->addExtension(new Twig_Extensions_Extension_Text());
 $twig->addExtension(new Extension\FormExtension(new \Symfony\Bridge\Twig\Form\TwigRenderer($engine)));

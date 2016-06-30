@@ -8,16 +8,13 @@ use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Router;
 
 // look inside *this* directory
-$locator = new FileLocator(array(__DIR__));
+$locator = new FileLocator(array(__DIR__ . '/config'));
 $loader = new YamlFileLoader($locator);
 $collection = $loader->load('routes.yml');
 
-$requestContext = new RequestContext('/config');
+$requestContext = new RequestContext('/');
 
-$router = new Router(
-    new YamlFileLoader($locator),
-    'routes.yml',
-    array('cache_dir' => __DIR__.'/cache'),
-    $requestContext
-);
-$router->match('/foo/bar');
+$container->set('collectionRoutes', $collection);
+$container->set('requestContext', $requestContext);
+
+//$router->match('/foo/bar');
