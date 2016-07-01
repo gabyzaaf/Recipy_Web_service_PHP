@@ -1,0 +1,1 @@
+<?phpdefine('DS', DIRECTORY_SEPARATOR);define('ROOT_PATH', dirname(__DIR__) . DS);define('CONF_PATH', ROOT_PATH . 'config' . DS);define('APP_PATH', ROOT_PATH . 'app' . DS);define('TPL_PATH', ROOT_PATH . 'views' . DS);define('VENDOR_PATH', ROOT_PATH . 'vendor' . DS);define('ENTITY_PATH', ROOT_PATH . 'class' . DS);define('CONTROLLER_PATH', ROOT_PATH . 'controller' . DS);
