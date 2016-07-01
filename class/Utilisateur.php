@@ -1,9 +1,11 @@
 <?php
-ini_set('display_errors', 1);
-require_once("Pdo.php");
-require_once("AbstractEntity.php");
 
-class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\Core\User\UserInterface
+namespace Recipy\Entity;
+
+use Symfony\Component\Security\Core\User\UserInterface;
+use Recipy\Db\SPdo;
+
+class Utilisateur extends AbstractEntity implements UserInterface
 {
 
     protected $id = 0;
@@ -20,7 +22,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
 
     public function __construct()
     {
-        $this->naissance = new DateTime();
+        $this->naissance = new \DateTime();
     }
 
     /**
@@ -46,7 +48,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
         $this->nom = $user['nom'];
         $this->prenom = $user['prenom'];
         $this->email = $user['email'];
-        $this->naissance = new DateTime($user['naissance']);
+        $this->naissance = new \DateTime($user['naissance']);
         $this->logins = $user['logins'];
         $this->admin = $user['admin'];
         $this->actif = $user['actif'];
@@ -86,7 +88,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
 
         $naissance = $this->naissance;
 
-        if ($naissance instanceof DateTime) {
+        if ($naissance instanceof \DateTime) {
             $naissance = $naissance->format('Y-m-d');
         }
 
@@ -117,7 +119,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":mdp"    => $this->getMdp()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function ajoutStorage()
@@ -133,7 +135,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":pwd"       => $this->mdp
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -154,7 +156,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":pwd"       => $this->getMdp()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -174,8 +176,8 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             $sql .= " AND pwd = MD5(:pwd)";
             $query_params = $query_params + [':pwd' => $this->getMdp()];
         }
-        
-        return !!Spdo::getInstance()->query($sql, $query_params);
+
+        return !!SPdo::getInstance()->query($sql, $query_params);
     }
 
     /*
@@ -195,7 +197,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             }
         }
 
-        return Spdo::getInstance()->query($sql, $query_params);
+        return SPdo::getInstance()->query($sql, $query_params);
     }
 */
 
@@ -217,7 +219,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":mdp"    => $this->mdp
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -225,12 +227,13 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
      */
     public function loadUser()
     {
+
         $sql = "SELECT * FROM utilisateur WHERE logins=:logins AND pwd=MD5(:mdp) LIMIT 1";
         $array = array(
             ":logins" => $this->logins,
             ":mdp"    => $this->mdp
         );
-        $datas = Spdo::getInstance()->query($sql, $array);
+        $datas = SPdo::getInstance()->query($sql, $array);
 
         if (!empty($datas))
             foreach (current($datas) as $attribute => $value) {
@@ -256,7 +259,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":logins" => $this->logins
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function desactiver()
@@ -273,7 +276,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":id" => $val[0]["id"]
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -319,7 +322,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":id"    => $id
         );
 
-        return !!Spdo::getInstance()->query($sql, $array);
+        return !!SPdo::getInstance()->query($sql, $array);
     }
 
     public function checkingToken($id)
@@ -333,7 +336,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":id" => $id
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function DesactiveSession($id)
@@ -348,7 +351,7 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
             ":id"    => $id
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -401,9 +404,9 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getNaissance() : DateTime
+    public function getNaissance() : \DateTime
     {
         return $this->naissance;
     }
@@ -459,8 +462,8 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
      */
     public function setNaissance($naissance): Utilisateur
     {
-        if (!$naissance instanceof DateTime)
-            $naissance = new DateTime($naissance);
+        if (!$naissance instanceof \DateTime)
+            $naissance = new \DateTime($naissance);
         $this->naissance = $naissance;
 
         return $this;
@@ -544,23 +547,36 @@ class Utilisateur extends AbstractEntity implements \Symfony\Component\Security\
 
     /********************************************************/
 
-    public function getRoles() {
-        $roles = ['ROLE_USER'];
-        if ($this->getAdmin())
-            $roles += ['ROLE_ADMIN'];
+    public function getRoles()
+    {
+        $roles = ['ROLE_ANONYMOUS'];
+        if ($this->id > 0) {
+            $roles = array_merge($roles, ['ROLE_USER']);
+
+            if ($this->getAdmin())
+                $roles = array_merge($roles, ['ROLE_ADMIN']);
+        }
 
         return $roles;
     }
-    public function getPassword() {
+
+    public function getPassword()
+    {
         return $this->getMdp();
     }
-    public function getSalt() {
+
+    public function getSalt()
+    {
         return;
     }
-    public function getUsername() {
+
+    public function getUsername()
+    {
         return $this->getLogins();
     }
-    public function eraseCredentials() {
+
+    public function eraseCredentials()
+    {
         return;
     }
 }

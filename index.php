@@ -1,10 +1,12 @@
 <?php
 
-require_once 'appKernel.php';
+ini_set('display_errors', 1);
+require_once 'app/appKernel.php';
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 $controller = $container->get('request')->attributes->get('_controller');
-if($controller == 'index' || $controller === null) {
+
+if ($controller == 'index' || $controller === null) {
 
     /** @var AuthorizationChecker $authorizationChecker */
     $authorizationChecker = $container->get('authorizationChecker');
@@ -18,5 +20,5 @@ if($controller == 'index' || $controller === null) {
     exit($template->render([]));
 }
 
-if(file_exists($controller. '.php'))
-    include_once $controller. '.php';
+if (file_exists(CONTROLLER_PATH . $controller . '.php'))
+    include_once CONTROLLER_PATH . $controller . '.php';

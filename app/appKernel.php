@@ -1,9 +1,7 @@
 <?php
 
-
-require_once 'vendor/autoload.php';
-require_once 'class/Utilisateur.php';
-require_once 'class/Recette.php';
+include_once 'prepend.php';
+require_once VENDOR_PATH . '/autoload.php';
 
 use Symfony\Component\Form as Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,12 +12,14 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Translation;
 
+use Recipy\Entity\Utilisateur;
+
 $session = new \Symfony\Component\HttpFoundation\Session\Session();
 $session->start();
 
 /** INIT CONTAINER */
 $container = new ContainerBuilder();
-$ymlLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
+$ymlLoader = new YamlFileLoader($container, new FileLocator(CONF_PATH));
 $container->set('container', $container);
 
 
@@ -58,7 +58,7 @@ $translator->setLocale('fr_FR');
 $translator->addResource('yaml', 'config/messages.fr.yml', 'fr_FR');
 
 /** INIT TEMPLATING */
-$loader = new Twig_Loader_Filesystem(['./views/', './vendor/symfony/twig-bridge/Resources/views/Form/']);
+$loader = new Twig_Loader_Filesystem([TPL_PATH, VENDOR_PATH . 'symfony/twig-bridge/Resources/views/Form/']);
 $twig = new Twig_Environment($loader, array('debug' => true));
 $engine = new \Symfony\Bridge\Twig\Form\TwigRendererEngine(array('bootstrap_3_layout.html.twig'));
 $engine->setEnvironment($twig);
@@ -88,15 +88,15 @@ $formFactory = Form\Forms::createFormFactoryBuilder()
     ->getFormFactory();
 
 
-include_once 'signin.php';
-include_once 'signup.php';
-include_once 'search.php';
+include_once CONTROLLER_PATH . 'signin.php';
+include_once CONTROLLER_PATH . 'signup.php';
 
 
 /**
  * @param Request     $request
  * @param Session     $session
  * @param Utilisateur $user
+ * @param array       $options
  */
 function initSession(Request $request, Session $session, Utilisateur $user, array $options = [])
 {

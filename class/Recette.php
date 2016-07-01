@@ -1,11 +1,15 @@
 <?php
 
+namespace Recipy\Entity;
+
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
 use \Symfony\Component\Validator\Constraints as Asserts;
+use Recipy\Db\SPdo;
 
-require_once("Pdo.php");
-require_once("AbstractEntity.php");
-
+/**
+ * Class Recette
+ * @package Recipy\Entity
+ */
 class Recette extends AbstractEntity
 {
 
@@ -77,7 +81,7 @@ class Recette extends AbstractEntity
             ":fid"   => $this->getFid()
         );
 
-        return !!Spdo::getInstance()->query($sql, $array);
+        return !!SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -95,7 +99,7 @@ class Recette extends AbstractEntity
             ":fid"        => $this->getFid()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -116,24 +120,24 @@ class Recette extends AbstractEntity
             ":fid"        => $this->getFid()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
-     * Return all recipies by id user
+     * Return all recipes by id user
      *
-     * @param $idUtilisateur
+     * @param int $uid
      *
-     * @return array|bool|string
+     * @return Recette
      */
-    public function findByUserId(int $idUtilisateur) : array
+    public function findByUserId(int $uid) : Recette
     {
-        $sql = "SELECT * FROM recette WHERE fid = :fid;";
-        $params = array(
-            ":fid" => $idUtilisateur
-        );
+        $this->query = "SELECT  SQL_CALC_FOUND_ROWS * FROM recette WHERE fid = :fid";
+        $this->setParams([
+            ":fid" => $uid
+        ]);
 
-        return Spdo::getInstance()->query($sql, $params);
+        return $this;
     }
 
     /**
@@ -149,7 +153,7 @@ class Recette extends AbstractEntity
             ":id" => $id
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function findAllVisible($isVisible = true, $limit = 10, $position = 0)
@@ -162,7 +166,8 @@ class Recette extends AbstractEntity
         if ($limit) {
             $sql .= " LIMIT $position, $limit ";
         }
-        return Spdo::getInstance()->query($sql, $array);
+
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function getRecette($idUtilisateur)
@@ -173,7 +178,7 @@ class Recette extends AbstractEntity
             ":fid" => $idUtilisateur
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -189,7 +194,7 @@ class Recette extends AbstractEntity
             ":title" => '%' . $title . '%'
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function visible($idRecette)
@@ -199,7 +204,7 @@ class Recette extends AbstractEntity
             ":id" => $idRecette
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -224,7 +229,7 @@ class Recette extends AbstractEntity
             ":fid"     => $this->getFid()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
 
@@ -235,7 +240,7 @@ class Recette extends AbstractEntity
             ":id" => $idRecette
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**

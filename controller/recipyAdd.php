@@ -1,8 +1,8 @@
 <?php
 
-include 'appKernel.php';
-
 use Symfony\Component\Form as Form;
+use Recipy\Entity\Utilisateur;
+use Recipy\Entity\Recette;
 
 /**
  * Controller : RecipyAdd

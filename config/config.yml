@@ -1,0 +1,7 @@
+## YAML Template.
+db:
+  name: recipy
+  username: root
+  pwd: ''
+  host: mariadb
+  port: 3306

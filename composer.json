@@ -4,6 +4,8 @@
     "type": "project",
     "autoload": {
         "psr-4": {
+            "Recipy\\Entity\\": "./class",
+            "Recipy\\Db\\": "./class",
             "Recipy\\": "./"
         }
     },

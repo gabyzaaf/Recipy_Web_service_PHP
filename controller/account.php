@@ -1,9 +1,9 @@
 <?php
 
-include_once 'appKernel.php';
-
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Form as Form;
+use Recipy\Entity\Utilisateur;
+use Recipy\Entity\Recette;
 
 /**
  * Controller : Account
@@ -17,7 +17,7 @@ $authorizationChecker = $container->get('authorizationChecker');
 
 if (!$authorizationChecker->isGranted('ROLE_USER')) {
     $session->clear();
-    header('Location: '.$container->get('router')->get('index'));
+    header('Location: '.$container->get('router')->get('index')->getPath());
 }
 
 $template = $twig->loadTemplate('page/account.html.twig');
@@ -45,6 +45,7 @@ $formViewAccount = $form->createView();
  */
 
 $recipy = new Recette();
-$recipies = $recipy->findByUserId($user->getId());
-
+$recipies = $recipy->findByUserId($user->getId())->limit(2)->execute()->fetchAll();
+$count = $recipy->getPagination();
+dump($count);
 echo $template->render(array('form' => $formViewAccount, 'list' => ['recipies' => $recipies]));

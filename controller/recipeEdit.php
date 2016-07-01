@@ -1,9 +1,10 @@
 <?php
 
-include_once 'appKernel.php';
-
 use Symfony\Component\Form as Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Recipy\Entity\Utilisateur;
+
+use Recipy\Entity\Recette;
 
 /**
  * Controller : RecipyAdd

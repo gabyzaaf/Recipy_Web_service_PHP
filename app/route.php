@@ -1,14 +1,11 @@
 <?php
 
-require_once 'appKernel.php';
-
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\Routing\Router;
 
 // look inside *this* directory
-$locator = new FileLocator(array(__DIR__ . '/config'));
+$locator = new FileLocator(array(CONF_PATH ));
 $loader = new YamlFileLoader($locator);
 $collection = $loader->load('routes.yml');
 

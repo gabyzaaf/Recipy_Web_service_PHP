@@ -1,20 +1,31 @@
 # routes.yml
 index:
     path:     /
+
 logout:
     path:     /signout
     defaults: { _controller: signout }
+login:
+    path:     /signin
+    defaults: { _controller: signin }
+    methods: [POST]
+register:
+    path:     /signup
+    defaults: { _controller: signup }
+    methods:  [POST]
+
 search:
     path:     /search/
     defaults: { _controller: search, q: null, page: 1}
 search_datas:
     path:     /search/{q}/
-    defaults: { _controller: search, page: 1}
-    methods: [GET]
+    defaults: { _controller: search, q: null, page: 1}
+search_datas_empty:
+    path:     /search//
+    defaults: { _controller: search, q: null, page: 1}
 search_datas_pagination:
     path:     /search/{q}/{page}
-    defaults: { _controller: search}
-    methods: [GET]
+    defaults: { _controller: search, q: null, page: 1}
     requirements:
         page:  \d+
 

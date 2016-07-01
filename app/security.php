@@ -1,7 +1,5 @@
 <?php
 
-require_once 'appKernel.php';
-
 use Symfony\Component\Security\Core\User\InMemoryUserProvider;
 use Symfony\Component\Security\Core\User\UserChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
@@ -14,6 +12,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use \Symfony\Component\Security\Core\Exception\AuthenticationException;
+
+use Recipy\Entity\Utilisateur;
 
 $user = $container->get('user')?? new Utilisateur();
 

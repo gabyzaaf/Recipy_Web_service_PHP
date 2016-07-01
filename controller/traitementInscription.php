@@ -1,8 +1,7 @@
 <?php
 
-include_once "appKernel.php";
-
 use Symfony\Component\Form as Form;
+use Recipy\Entity\Utilisateur;
 
 if (true) {
     include_once 'signin.php';

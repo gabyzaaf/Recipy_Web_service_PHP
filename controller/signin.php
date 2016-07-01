@@ -1,19 +1,22 @@
 <?php
 
-require_once 'appKernel.php';
-
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form;
+use Recipy\Entity\Utilisateur;
 
 if (!isset($_SESSION['user'])) {
     $user = new Utilisateur();
+    /** @var Request $request */
+    $request = $container->get('request');
+    
     $formSignIn = $formFactory->createBuilder('\Recipy\Form\SignInType',$user)
-        ->setAction('signin.php')
+        ->setAction($request->getUriForPath($container->get('router')->get('login')->getPath()))
         ->getForm();
 
     $formSignIn->handleRequest($request);
 
     if ($formSignIn->isValid()) {
-        initSession($request, $session, $user, ['withPass' => true]);
+        initSession($request, $container->get('session'), $user, ['withPass' => true]);
         if ($request->isXmlHttpRequest()) {
             exit(json_encode(['location' => '/account.php']));
         }

@@ -1,14 +1,13 @@
 <?php
 
-require_once 'appKernel.php';
-
 use Symfony\Component\Form as Form;
+use Recipy\Entity\Utilisateur;
 
 if (!isset($_SESSION['user'])) {
 
     $user = new Utilisateur();
     $formSignUp = $formFactory->createBuilder('\Recipy\Form\SignUpType', $user)
-        ->setAction('signup.php')
+        ->setAction($container->get('request')->getUriForPath($container->get('router')->get('register')->getPath()))
         ->getForm();
 
     $formSignUp->handleRequest($request);
