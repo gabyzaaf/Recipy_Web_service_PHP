@@ -19,6 +19,14 @@
         {% for row in list_row %}
             {% include row_tpl %}
         {% endfor %}
+
+        {% if list[target]['count'] is not  null %}
+            <div class="row">
+                <p class="col-md-12 text-right">
+                    <small>{{ 'result_find'| transchoice(list[target]['count']) }}</small>
+                </p>
+            </div>
+        {% endif %}
     {% else %}
 
         {% if list['values'] is not null %}
@@ -30,6 +38,14 @@
         {% for row in list_row %}
             {% include row_tpl %}
         {% endfor %}
+
+        {% if list['count'] is not  null %}
+            <div class="row">
+                <p class="col-md-12 text-right">
+                    <small>{{ 'result_find'| transchoice(list['count']) }}</small>
+                </p>
+            </div>
+        {% endif %}
     {% endif %}
 </div>
 

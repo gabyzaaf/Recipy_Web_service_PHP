@@ -124,6 +124,23 @@ class Recette extends AbstractEntity
     }
 
     /**
+     * @param int    $uid
+     * @param string $title
+     *
+     * @return Recette
+     */
+    public function findByUserIdAndTitle(int $uid, string $title) : Recette
+    {
+        $this->query = "SELECT SQL_CALC_FOUND_ROWS * FROM recette WHERE fid = :fid AND title LIKE :title";
+        $this->setParams([
+            ':fid'   => $uid,
+            ':title' => '%' . $title . '%'
+        ]);
+
+        return $this;
+    }
+
+    /**
      * Return all recipes by id user
      *
      * @param int $uid

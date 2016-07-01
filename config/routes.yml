@@ -29,6 +29,20 @@ search_datas_pagination:
     requirements:
         page:  \d+
 
+search_recipe_account:
+    path:     /account/recipy/{page}/
+    defaults: { _controller: account, section: 'recipy', acq: null,  page: 1}
+    requirements:
+            page:  \d+
+search_recipe_empty_account:
+    path:     /account/recipy//
+    defaults: { _controller: account, section: 'recipy', acq: null, page: 1}
+search_recipe_account_page:
+    path:     /account/recipy/{page}/{acq}
+    defaults: { _controller: account, section: 'recipy', acq: null,  page: 1}
+    requirements:
+            page:  \d+
+
 account:
     path:     /account/
     defaults: { _controller: account, section: 'account', page: 1}

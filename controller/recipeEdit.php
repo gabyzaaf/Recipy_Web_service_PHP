@@ -47,11 +47,14 @@ $form = $formFactory->createBuilder(\Recipy\Form\RecipyType::class, $recipy)
 
 $form->handleRequest($request);
 
+
 if($request->headers->get('referer') != $container->get('request')->getSchemeAndHttpHost() .$container->get('request_uri'))
     $container->get('session')->set('referer', $request->headers->get('referer'));
 
 if ($form->get('return_list')->isClicked()) {
     header('Location: ' . $container->get('session')->get('referer'));
+    $container->get('session')->set('referer', null);
+    exit();
 }
 
 if ($form->isValid()) {

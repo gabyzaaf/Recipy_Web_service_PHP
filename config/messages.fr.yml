@@ -3,3 +3,4 @@ logout: Déconnexion
 my_account: Mon Compte
 my_recipes: Mes Recettes
 my_favourites: Mes Favoris
+result_find: '{0}Aucun résultat trouvé.|{1}%count% résultat trouvé.|]1,Inf[%count% résultats trouvés.'
