@@ -5,3 +5,7 @@ db:
   pwd: ''
   host: mariadb
   port: 3306
+
+data:
+  list:
+    limit: 2

@@ -18,7 +18,7 @@ $authorizationChecker = $container->get('authorizationChecker');
 
 if (!$authorizationChecker->isGranted('ROLE_USER')) {
     $session->clear();
-    header('Location: '.$container->get('router')->get('index')->getPath());
+    header('Location: ' . $container->get('router')->get('index')->getPath());
 }
 
 $template = $twig->loadTemplate('page/account.html.twig');
@@ -38,7 +38,8 @@ $form->handleRequest($request);
 
 if ($form->isSubmitted() && $form->isValid()) {
     $user->saveProfile();
-    header('Location: '.$container->get('request_uri'));exit();
+    header('Location: ' . $container->get('request_uri'));
+    exit();
 }
 
 $formViewAccount = $form->createView();
@@ -46,14 +47,15 @@ $formViewAccount = $form->createView();
 /**
  * Controller to My recipes part
  */
+$limit = $container->get('config')['data']['list']['limit'] ?? 0;
 
 $formSearch = $formFactory->createBuilder()
-    ->add('acq', Form\Extension\Core\Type\TextType::class,['required' => true])
+    ->add('acq', Form\Extension\Core\Type\TextType::class, ['required' => true])
     ->setAction($container->get('request')->attributes->get('request_uri'))
     ->setMethod('get')
     ->getForm();
 
-if(!empty($request->get('acq')))
+if (!empty($request->get('acq')))
     $formSearch->submit(['acq' => $request->get('acq')]);
 
 $recipe = new Recette();
@@ -61,14 +63,14 @@ $page = $request->attributes->get('page');
 
 if ($formSearch->isValid()) {
     $formDatas = $formSearch->getData();
-    $recipies = $recipe->findByUserIdAndTitle($user->getId(), $formDatas['acq'])->limit(2, $page * 2 -2 )->execute()->fetchAll();
+    $recipies = $recipe->findByUserIdAndTitle($user->getId(), $formDatas['acq'])->limit($limit, $page * $limit - $limit)->execute()->fetchAll();
 } else {
-    $recipies = $recipe->findByUserId($user->getId())->limit(2, $page * 2 -2 )->execute()->fetchAll();
+    $recipies = $recipe->findByUserId($user->getId())->limit($limit, $page * $limit - $limit)->execute()->fetchAll();
 }
 
 $count = $recipe->getPagination();
-$countRecipes = count($recipies) > 0 ? count($recipies) : 1;
-$pageCount = $count / $countRecipes;
+$countRecipes = $limit > 0 ? $limit : 1;
+$pageCount = ceil($count / $countRecipes);
 
 $list = ['recipies' => ['values' => $recipies, 'count' => $count, 'pagination' => ['current' => $page ?? 0, 'count' => $pageCount]]];
 

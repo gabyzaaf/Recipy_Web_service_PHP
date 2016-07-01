@@ -46,6 +46,10 @@ $container->set('request_uri', $container->get('request')->getRequestUri());
 $ymlLoader->load('form.yml');
 $ymlLoader->load('twig_extension.yml');
 
+$yaml = new \Symfony\Component\Yaml\Parser();
+$config = $yaml->parse(file_get_contents(CONF_PATH . 'config.yml'));
+
+$container->set('config', $config);
 
 /** SECURITY */
 require_once 'security.php';

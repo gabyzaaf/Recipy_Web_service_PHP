@@ -3,45 +3,40 @@
 use Symfony\Component\Form as Form;
 use Recipy\Entity\Recette;
 
+/**
+ *  Controller : Search
+ */
+$limit = $container->get('config')['data']['list']['limit'] ?? 0;
+$template = $twig->loadTemplate('page/search.html.twig');
+
 $formSearch = $formFactory->createBuilder()
-    ->add('q', Form\Extension\Core\Type\TextType::class,['required' => true])
+    ->add('q', Form\Extension\Core\Type\TextType::class, ['required' => true])
     ->setAction($container->get('request')->attributes->get('request_uri'))
     ->setMethod('get')
     ->getForm();
 
-if(!empty($request->get('q')))
+if (!empty($request->get('q')))
     $formSearch->submit(['q' => $request->get('q')]);
 
 $recipe = new Recette();
-$list = [];
-$recipies = [];
-$limitNode = 2;
+$page = $request->attributes->get('page');
 
 if ($formSearch->isValid()) {
     $formDatas = $formSearch->getData();
-    $recipies = $recipe->findByTitle($formDatas['q']);
-    $count = count($recipe->findAllVisible());
-    if ($request->isXmlHttpRequest()) {
-        $template = $twig->loadTemplate('list/recipy.html.twig');
-        exit(json_encode(['body' => $template->render(['list' => ['recipies' => $recipies]])]));
-    }
-
+    $recipies = $recipe->findByVisibilityAndTitle($formDatas['q'], true)->limit($limit, $page * $limit - $limit)->execute()->fetchAll();
 } else {
-    $page = $page ?? 0;
-    $test = function($closure) use ($recipe, $page){
-        return $recipe->$closure(true, 2, $page ?? 0);
-    };
-    $recipies = $test('findAllVisible');
-    $count = count($recipe->findAllVisible());
+    $recipies = $recipe->findByVisibility(true)->limit($limit, $page * $limit - $limit)->execute()->fetchAll();
 }
 
-$list = ['recipies' => ['values' => $recipies, 'pagination' => ['current' => $page ?? 0, 'count' => 0]]];
+$count = $recipe->getPagination();
+$countRecipes = $limit > 0 ? $limit : 1;
+$pageCount = ceil($count / $countRecipes);
+
+$list = ['recipies' => ['values' => $recipies, 'count' => $count, 'pagination' => ['current' => $page ?? 0, 'count' => $pageCount]]];
 
 $formViewSignIn = $formSearch->createView();
-dump($count);
+
 $twig->addGlobal('form_search', $formViewSignIn);
 $twig->addGlobal('list', ($twig->getGlobals()['list']??[]) + $list);
-
-$template = $twig->loadTemplate('page/search.html.twig');
 
 exit($template->render([]));

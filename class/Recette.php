@@ -173,18 +173,30 @@ class Recette extends AbstractEntity
         return SPdo::getInstance()->query($sql, $array);
     }
 
-    public function findAllVisible($isVisible = true, $limit = 10, $position = 0)
+    /**
+     * @param bool $isVisible
+     *
+     * @return Recette
+     */
+    public function findByVisibility($isVisible = true) : Recette
     {
-        $sql = "SELECT * FROM recette WHERE visible = :visible";
-        $array = array(
+        $this->query = "SELECT SQL_CALC_FOUND_ROWS * FROM recette WHERE visible = :visible";
+        $this->setParams(array(
             ":visible" => !!$isVisible
-        );
+        ));
 
-        if ($limit) {
-            $sql .= " LIMIT $position, $limit ";
-        }
+        return $this;
+    }
 
-        return SPdo::getInstance()->query($sql, $array);
+    public function findByVisibilityAndTitle($title, $isVisible = true) : Recette
+    {
+        $this->query = "SELECT SQL_CALC_FOUND_ROWS * FROM recette WHERE title LIKE :title AND visible = :visible";
+        $this->setParams(array(
+            ":visible" => !!$isVisible,
+            ":title" => '%' . $title . '%'
+        ));
+        
+        return $this;
     }
 
     public function getRecette($idUtilisateur)

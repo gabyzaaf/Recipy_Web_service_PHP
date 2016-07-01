@@ -15,16 +15,21 @@ register:
     methods:  [POST]
 
 search:
-    path:     /search/
+    path:     /search/{page}/
     defaults: { _controller: search, q: null, page: 1}
-search_datas:
-    path:     /search/{q}/
-    defaults: { _controller: search, q: null, page: 1}
-search_datas_empty:
+    requirements:
+        page:  \d+
+search_empty:
     path:     /search//
     defaults: { _controller: search, q: null, page: 1}
-search_datas_pagination:
-    path:     /search/{q}/{page}
+
+search_pagination_empty_data:
+    path:     /search/{page}//
+    defaults: { _controller: search, q: null, page: 1}
+    requirements:
+        page:  \d+
+search_pagination_datas:
+    path:     /search/{page}/{q}/
     defaults: { _controller: search, q: null, page: 1}
     requirements:
         page:  \d+

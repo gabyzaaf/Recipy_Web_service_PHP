@@ -1,6 +1,6 @@
 {#{{ form_start(form_search) }}#}
 {#{{ form_end(form_search) }}#}
-<form class="navbar-form navbar-left" role="search" data-path="{{ path('search_datas', {'q':'__q__'}) }}" action="{{ path('search') }}" method="post">
+<form class="navbar-form navbar-left" role="search" data-path="{{ path('search_pagination_datas', {'page': 1,'q':'__q__'}) }}" action="{{ path('search') }}" method="post">
     <div class="form-group">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="Search" value="{{ request.get('q') }}"/>
