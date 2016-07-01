@@ -1,7 +1,5 @@
 <?php
 
-require_once 'appKernel.php';
-
 $Article = new Recette();
 /**
  * PUT  :    Add

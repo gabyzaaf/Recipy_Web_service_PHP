@@ -9,12 +9,48 @@
     {% endif %}
 
     {% if target %}
-        {% for row in list[target] %}
+
+        {% if list[target]['values'] is not null %}
+            {% set list_row = list[target]['values'] %}
+        {% else %}
+            {% set list_row = list[target] %}
+        {% endif %}
+
+        {% for row in list_row %}
             {% include row_tpl %}
         {% endfor %}
+
+        {% if list[target]['count'] is not  null %}
+            <div class="row">
+                <p class="col-md-12 text-right">
+                    <small>{{ 'result_find'| transchoice(list[target]['count']) }}</small>
+                </p>
+            </div>
+        {% endif %}
     {% else %}
-        {% for row in list %}
+
+        {% if list['values'] is not null %}
+            {% set list_row = list['values'] %}
+        {% else %}
+            {% set list_row = list %}
+        {% endif %}
+
+        {% for row in list_row %}
             {% include row_tpl %}
         {% endfor %}
+
+        {% if list['count'] is not  null %}
+            <div class="row">
+                <p class="col-md-12 text-right">
+                    <small>{{ 'result_find'| transchoice(list['count']) }}</small>
+                </p>
+            </div>
+        {% endif %}
     {% endif %}
 </div>
+
+{% if target and list[target]['pagination'] is not null %}
+    {% include 'pagination/pagination.html.twig' with {'pagination' : list[target]['pagination']} %}
+{% elseif list['pagination'] is not null %}
+    {% include 'pagination/pagination.html.twig' with {'pagination' :list['pagination']} %}
+{% endif %}

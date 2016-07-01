@@ -1,5 +1,6 @@
 <?php
-ini_set('display_errors', 1);
+
+namespace Recipy\Db;
 
 class SPdo
 {
@@ -18,10 +19,10 @@ class SPdo
     {
         $dsn = 'mysql:dbname=' . self::DATABASE . ';host=' . self::SERVER . ':3306';
         try {
-            $this->PDOinstance = new PDO($dsn, self::LOGIN, self::PASSWORD);
-        } catch (PDOException $e) {
+            $this->PDOinstance = new \PDO($dsn, self::LOGIN, self::PASSWORD);
+        } catch (\PDOException $e) {
             $dsn = 'mysql:dbname=' . self::DATABASE . ';host=' . self::SERVER_DOCKER . ':3306';
-            $this->PDOinstance = new PDO($dsn, self::LOGIN, "");
+            $this->PDOinstance = new \PDO($dsn, self::LOGIN, "");
         }
         $this->PDOinstance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
     }
@@ -49,11 +50,11 @@ class SPdo
 
                 $statement->execute($array);
 
-                return $statement->fetchAll(PDO::FETCH_ASSOC);
+                return $statement->fetchAll(\PDO::FETCH_ASSOC);
             } else {
                 return $statement->execute($array);
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             return $e->getMessage();
         }
 

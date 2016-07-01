@@ -1,3 +1,75 @@
 # routes.yml
+index:
+    path:     /
+
+logout:
+    path:     /signout
+    defaults: { _controller: signout }
+login:
+    path:     /signin
+    defaults: { _controller: signin }
+    methods: [POST]
+register:
+    path:     /signup
+    defaults: { _controller: signup }
+    methods:  [POST]
+
 search:
-    path:     /index.php
+    path:     /search/{page}/
+    defaults: { _controller: search, q: null, page: 1}
+    requirements:
+        page:  \d+
+search_empty:
+    path:     /search//
+    defaults: { _controller: search, q: null, page: 1}
+
+search_pagination_empty_data:
+    path:     /search/{page}//
+    defaults: { _controller: search, q: null, page: 1}
+    requirements:
+        page:  \d+
+search_pagination_datas:
+    path:     /search/{page}/{q}/
+    defaults: { _controller: search, q: null, page: 1}
+    requirements:
+        page:  \d+
+
+search_recipe_account:
+    path:     /account/recipy/{page}/
+    defaults: { _controller: account, section: 'recipy', acq: null,  page: 1}
+    requirements:
+            page:  \d+
+search_recipe_empty_account:
+    path:     /account/recipy//
+    defaults: { _controller: account, section: 'recipy', acq: null, page: 1}
+search_recipe_account_page:
+    path:     /account/recipy/{page}/{acq}
+    defaults: { _controller: account, section: 'recipy', acq: null,  page: 1}
+    requirements:
+            page:  \d+
+
+account:
+    path:     /account/
+    defaults: { _controller: account, section: 'account', page: 1}
+account_section:
+    path:     /account/{section}/
+    defaults: { _controller: account, section: 'account', page: 1}
+account_section_page:
+    path:     /account/{section}/{page}
+    defaults: { _controller: account, section: 'account', page: 1}
+    requirements:
+            page:  \d+
+
+recipe_edit:
+    path:     /recipe/{id}
+    defaults: { _controller: recipeEdit }
+    requirements:
+                page:  \d+
+recipe_add:
+    path:     /recipe/add
+    defaults: { _controller: recipeAdd }
+recipe_show:
+    path:     /recipe/{id}/{title}
+    defaults: { _controller: recipe }
+    requirements:
+            id:  \d+

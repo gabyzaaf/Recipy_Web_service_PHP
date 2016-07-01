@@ -22,7 +22,7 @@
                     title=""
                     data-original-title="visibilité"
                     class="black-tooltip glyphicon glyphicon-eye-{% if row.visible %}open{% else %}close{% endif %}"></a>
-        <a href="recipeEdit.php?id={{ row.id }}" class="" aria-hidden="true"
+        <a href="{{ path('recipe_edit', {'id' : row.id}) }}" class="" aria-hidden="true"
            style="line-height: 20px;font-size: 20px; margin-left: 10px;"><span
                     data-toggle="tooltip"
                     data-placement="top"

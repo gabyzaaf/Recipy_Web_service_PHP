@@ -1,11 +1,15 @@
 <?php
 
+namespace Recipy\Entity;
+
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
 use \Symfony\Component\Validator\Constraints as Asserts;
+use Recipy\Db\SPdo;
 
-require_once("Pdo.php");
-require_once("AbstractEntity.php");
-
+/**
+ * Class Recette
+ * @package Recipy\Entity
+ */
 class Recette extends AbstractEntity
 {
 
@@ -51,10 +55,11 @@ class Recette extends AbstractEntity
      *
      * @return $this
      */
-    public function load($id){
+    public function load($id)
+    {
         $data = $this->find($id);
-        
-        if(empty($data))
+
+        if (empty($data))
             return $this;
 
         foreach (current($data) as $attribute => $value) {
@@ -76,7 +81,7 @@ class Recette extends AbstractEntity
             ":fid"   => $this->getFid()
         );
 
-        return !!Spdo::getInstance()->query($sql, $array);
+        return !!SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -94,7 +99,7 @@ class Recette extends AbstractEntity
             ":fid"        => $this->getFid()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -107,7 +112,7 @@ class Recette extends AbstractEntity
                 visible = :visible, fid = :fid 
                 WHERE id = :id";
         $array = array(
-            ":id"      => $this->getId(),
+            ":id"         => $this->getId(),
             ":title"      => $this->getTitle(),
             ":contenu"    => $this->getContenu(),
             ":image_lien" => $this->getImage(),
@@ -115,24 +120,41 @@ class Recette extends AbstractEntity
             ":fid"        => $this->getFid()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
-     * Return all recipies by id user
+     * @param int    $uid
+     * @param string $title
      *
-     * @param $idUtilisateur
-     *
-     * @return array|bool|string
+     * @return Recette
      */
-    public function findByUserId(int $idUtilisateur) : array
+    public function findByUserIdAndTitle(int $uid, string $title) : Recette
     {
-        $sql = "SELECT * FROM recette WHERE fid = :fid;";
-        $params = array(
-            ":fid" => $idUtilisateur
-        );
+        $this->query = "SELECT SQL_CALC_FOUND_ROWS * FROM recette WHERE fid = :fid AND title LIKE :title";
+        $this->setParams([
+            ':fid'   => $uid,
+            ':title' => '%' . $title . '%'
+        ]);
 
-        return Spdo::getInstance()->query($sql, $params);
+        return $this;
+    }
+
+    /**
+     * Return all recipes by id user
+     *
+     * @param int $uid
+     *
+     * @return Recette
+     */
+    public function findByUserId(int $uid) : Recette
+    {
+        $this->query = "SELECT  SQL_CALC_FOUND_ROWS * FROM recette WHERE fid = :fid";
+        $this->setParams([
+            ":fid" => $uid
+        ]);
+
+        return $this;
     }
 
     /**
@@ -148,18 +170,35 @@ class Recette extends AbstractEntity
             ":id" => $id
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
-    public function findAllVisible($isVisible = true){
-        $sql = "SELECT * FROM recette WHERE visible = :visible";
-
-        $array = array(
+    /**
+     * @param bool $isVisible
+     *
+     * @return Recette
+     */
+    public function findByVisibility($isVisible = true) : Recette
+    {
+        $this->query = "SELECT SQL_CALC_FOUND_ROWS * FROM recette WHERE visible = :visible";
+        $this->setParams(array(
             ":visible" => !!$isVisible
-        );
+        ));
 
-        return Spdo::getInstance()->query($sql, $array);
+        return $this;
     }
+
+    public function findByVisibilityAndTitle($title, $isVisible = true) : Recette
+    {
+        $this->query = "SELECT SQL_CALC_FOUND_ROWS * FROM recette WHERE title LIKE :title AND visible = :visible";
+        $this->setParams(array(
+            ":visible" => !!$isVisible,
+            ":title" => '%' . $title . '%'
+        ));
+        
+        return $this;
+    }
+
     public function getRecette($idUtilisateur)
     {
         $sql = "select * from recette where fid=:fid and visible=1";
@@ -168,7 +207,7 @@ class Recette extends AbstractEntity
             ":fid" => $idUtilisateur
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -184,7 +223,7 @@ class Recette extends AbstractEntity
             ":title" => '%' . $title . '%'
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     public function visible($idRecette)
@@ -194,7 +233,7 @@ class Recette extends AbstractEntity
             ":id" => $idRecette
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -219,7 +258,7 @@ class Recette extends AbstractEntity
             ":fid"     => $this->getFid()
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
 
@@ -230,7 +269,7 @@ class Recette extends AbstractEntity
             ":id" => $idRecette
         );
 
-        return Spdo::getInstance()->query($sql, $array);
+        return SPdo::getInstance()->query($sql, $array);
     }
 
     /**
@@ -337,7 +376,8 @@ class Recette extends AbstractEntity
         return $this->fid <= 0 ? $_SESSION['_sf2_attributes']['user']['id'] : $this->fid;
     }
 
-    public function getCurrentOwn() {
+    public function getCurrentOwn()
+    {
         return $this->fid;
     }
 
