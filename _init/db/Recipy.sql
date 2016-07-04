@@ -30,8 +30,8 @@ TODO: une recette ne doit pas être supprimé en automatique
  */
 CREATE TABLE IF NOT EXISTS recette (
   id INTEGER NOT NULL AUTO_INCREMENT,
-  title VARCHAR(255),
-  contenu TEXT,
+  title VARCHAR(255) NOT NULL,
+  contenu TEXT NOT NULL,
   image_lien VARCHAR(255),
   visible BOOLEAN DEFAULT TRUE,
   partage BOOLEAN DEFAULT FALSE,

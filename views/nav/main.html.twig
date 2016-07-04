@@ -23,7 +23,7 @@
 
                 {% if not isLogged() %}
                 <li class="navbar-right">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modal-login">Sing in</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modal-login">{{ 'login' | trans }}</a>
                     {% else %}
                 <li class="navbar-right dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -41,9 +41,9 @@
                                   class="black-tooltip">{{ user_username() | default('unknow') }}</span></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ path('account', {'section': 'account'}) }}">{{ 'my_account' | trans }}</a></li>
-                        <li><a href="{{ path('account_section', {'section': 'favourite'}) }}">{{ 'my_favourites' | trans }}</a></li>
-                        <li><a href="{{ path('account_section', {'section': 'recipy'}) }}">{{ 'my_recipes' | trans }}</a></li>
-                        <li><a href="{{ path('logout') }}.php">{{ 'logout' | trans }}</a></li>
+                        <li><a href="{{ path('account', {'section': 'favourite'}) }}">{{ 'my_favourites' | trans }}</a></li>
+                        <li><a href="{{ path('account', {'section': 'recipy'}) }}">{{ 'my_recipes' | trans }}</a></li>
+                        <li><a href="{{ path('logout') }}   ">{{ 'logout' | trans }}</a></li>
                     </ul>
                     {% endif %}
                 </li>

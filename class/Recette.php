@@ -19,10 +19,23 @@ class Recette extends AbstractEntity
     protected $image;
     protected $visible;
     protected $partage;
+    protected $createAt;
+    protected $updateAt;
     protected $fid;
 
     /** @var \Symfony\Component\HttpFoundation\File\File */
     public $file = null;
+
+    /**
+     * Recette constructor.
+     *
+     */
+    public function __construct()
+    {
+        $this->updateAt = new \DateTime();
+        $this->createAt = new \DateTime();
+    }
+
 
     /**
      * Use to the validation data form
@@ -387,6 +400,38 @@ class Recette extends AbstractEntity
     public function setFid($fid)
     {
         $this->fid = $fid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreateAt()
+    {
+        return $this->createAt;
+    }
+
+    /**
+     * @param mixed $createAt
+     */
+    public function setCreateAt($createAt)
+    {
+        $this->createAt = $createAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdateAt()
+    {
+        return $this->updateAt;
+    }
+
+    /**
+     * @param mixed $updateAt
+     */
+    public function setUpdateAt($updateAt)
+    {
+        $this->updateAt = $updateAt;
     }
 
 }

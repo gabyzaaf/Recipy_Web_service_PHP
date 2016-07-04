@@ -1,7 +1,7 @@
 jQuery(document).ready(function () {
-    $('form[data-path]').on('submit', function(e) {
+    $('form[data-path]').on('submit', function() {
         $(this).attr("action", urlGetFormFormat(this));
-    })
+    });
 
     urlGetFormFormat();
     $('#modal-send').on('click', function () {
@@ -31,17 +31,22 @@ function ajaxSubmit(form) {
         data = $.parseJSON(data)
         console.log(data.body != undefined);
         console.log(data.error != undefined);
+
         if (data.location != undefined)
             window.location.replace(data.location);
+
         if (data.body != undefined)
             $(form).replaceWith(data.body);
+
         if (data.error != undefined) {
-            errorId = 'error-' + $(form).attr('name');
-            errorMessage = '<p id="' + errorId + '"class="col-md-12 alert alert-danger">' + data.error.message + '</p>';
-            if ($('#' + errorId).length == 0) {
+            var errorId = 'error-' + $(form).attr('name');
+            var errorMessage = '<p id="' + errorId + '"class="col-md-12 alert alert-danger">' + data.error.message + '</p>';
+            var errIdElement = $('#' + errorId);
+
+            if (errIdElement.length == 0) {
                 $(form).prepend(errorMessage);
             } else {
-                $('#' + errorId).replaceWith(errorMessage)
+                errIdElement.replaceWith(errorMessage)
             }
         }
     })
@@ -50,8 +55,10 @@ function ajaxSubmit(form) {
 function urlGetFormFormat(form) {
     var datas = $(form).serializeArray();
     var path = $(form).data('path');
+
     $.each(datas, function (key, data) {
         path = path.replace("__" + data.name + "__", data.value);
-    })
+    });
+
     return path;
 }

@@ -1,25 +1,21 @@
 <?php
 
 use Symfony\Component\Form as Form;
-use Recipy\Entity\Utilisateur;
 use Recipy\Entity\Recette;
 
 /**
  * Controller : RecipyAdd
  */
 
-/** @var Utilisateur $user */
-$user = $session->get('user');
+/** @var AuthorizationChecker $authorizationChecker */
+$authorizationChecker = $container->get('authorizationChecker');
 
-if ($user === null
-    || !$user instanceof Utilisateur
-    || !$user->loadCurrentUser()
-) {
+if (!$authorizationChecker->isGranted('ROLE_USER')) {
     $session->clear();
-    header('Location: /index.php');
+    header('Location: ' . $container->get('router')->generate('index'));
 }
-$template = $twig->loadTemplate('page/recipy/add.html.twig');
 
+$template = $twig->loadTemplate('page/recipy/add.html.twig');
 
 /**
  * Controller to Add Recipy
@@ -44,7 +40,7 @@ $form = $formFactory->createBuilder(\Recipy\Form\RecipyType::class, $recipy)
 $form->handleRequest($request);
 
 if ($form->get('return_list')->isClicked()) {
-    header('Location: account.php?section=recipy');
+    header('Location: '.$container->get('router')->generate('account', ['section'=> 'recipy']));
 }
 
 if ($form->isValid()) {
@@ -57,6 +53,7 @@ if ($form->isValid()) {
     } else {
         $session->getFlashBag()
             ->add('success', 'This recipe has been insert.');
+        
     }
 }
 

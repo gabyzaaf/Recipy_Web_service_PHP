@@ -40,7 +40,6 @@ class RecipyType extends AbstractType
                     'label'       => 'Title',
                     'required'    => true,
                     'constraints' => [new NotBlank()],
-                    'disabled'    => $forEdit,
                 ]
             )
             ->add('contenu', Type\TextareaType::class)

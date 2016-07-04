@@ -66,8 +66,8 @@ CREATE TABLE `noter` (
 
 CREATE TABLE `Recette` (
   `id` int(11) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `contenu` text,
+  `title` varchar(255) NOT NULL,
+  `contenu` text NOT NULL,
   `image_lien` varchar(255) DEFAULT NULL,
   `visible` tinyint(1) DEFAULT '1',
   `partage` tinyint(1) DEFAULT '0',

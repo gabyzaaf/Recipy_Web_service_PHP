@@ -18,7 +18,7 @@ $authorizationChecker = $container->get('authorizationChecker');
 
 if (!$authorizationChecker->isGranted('ROLE_USER')) {
     $session->clear();
-    header('Location: ' . $container->get('router')->get('index')->getPath());
+    header('Location: ' . $container->get('router')->generate('index'));
 }
 
 $template = $twig->loadTemplate('page/account.html.twig');
