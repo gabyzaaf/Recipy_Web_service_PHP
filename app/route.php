@@ -8,9 +8,12 @@ use Symfony\Component\Routing\Loader\YamlFileLoader;
 $locator = new FileLocator(array(CONF_PATH ));
 $loader = new YamlFileLoader($locator);
 $collection = $loader->load('routes.yml');
+$requestContext = new RequestContext();
+$requestContext->fromRequest($container->get('request'));
+$router = new \Symfony\Component\Routing\Router($loader, 'routes.yml', [],$requestContext);
 
-$requestContext = new RequestContext('/index.php');
-$matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($collection, $requestContext);
+$matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($router->getRouteCollection(), $requestContext);
 
-$container->set('router', $collection);
+$container->set('collection_route', $collection);
 $container->set('context', $requestContext);
+$container->set('router', $router);

@@ -25,4 +25,4 @@ services:
 
     routing.urlgenerator:
        class: '%routing.urlgenerator.class%'
-       arguments: [ '@router','@context' ]
+       arguments: [ '@collection_route','@context' ]

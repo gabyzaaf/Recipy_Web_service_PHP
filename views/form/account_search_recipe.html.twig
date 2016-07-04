@@ -1,13 +1,14 @@
 {#{{ form_start(form_search) }}#}
 {#{{ form_end(form_search) }}#}
-<form role="search" data-path="{{ path('search_recipe_account_page', {'page' : 1,'acq':'__acq__'}) }}"
-      action="{{ path('account_section', {'section': 'recipy'}) }}" method="post">
+<form role="search" data-path="{{ path('account_recipe_search', {'page' : 1,'acq':'__acq__'}) }}"
+      action="{{ path('account', {'section': 'recipy'}) }}" method="post">
     <div class="form-group">
         <div class="input-group">
             <input type="text" name="acq" class="form-control" placeholder="Search" value="{{ request.get('acq') }}"/>
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default"><span
-                                class="glyphicon glyphicon-search"></span></button>
+                    <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
                 </span>
         </div>
     </div>

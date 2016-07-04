@@ -15,7 +15,7 @@ $authorizationChecker = $container->get('authorizationChecker');
 
 if (!$authorizationChecker->isGranted('ROLE_USER')) {
     $session->clear();
-    header('Location: ' . $container->get('router')->get('index'));
+    header('Location: ' . $container->get('router')->generate('index'));
 }
 
 $template = $twig->loadTemplate('page/recipy/edit.html.twig');

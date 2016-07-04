@@ -1,4 +1,4 @@
 <?php
 
 $session->clear();
-header('Location: /');
+header('Location: ' . $container->get('router')->generate('index'));

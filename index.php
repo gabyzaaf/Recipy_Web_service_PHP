@@ -22,3 +22,5 @@ if ($controller == 'index' || $controller === null) {
 
 if (file_exists(CONTROLLER_PATH . $controller . '.php'))
     include_once CONTROLLER_PATH . $controller . '.php';
+else
+    $twig->loadTemplate('404.html.twig.html')->render([]);

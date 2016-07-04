@@ -1,11 +1,12 @@
 <?php
 
 include_once 'prepend.php';
-require_once VENDOR_PATH . '/autoload.php';
+require_once VENDOR_PATH . 'autoload.php';
 
 use Symfony\Component\Form as Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Bridge\Twig\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -22,27 +23,32 @@ $container = new ContainerBuilder();
 $ymlLoader = new YamlFileLoader($container, new FileLocator(CONF_PATH));
 $container->set('container', $container);
 
+/** INIT HTTP REQUEST MANAGER */
+$request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
+$container->set('request', $request);
 
 /** ROUTER */
 require_once 'route.php';
 
-/** INIT HTTP REQUEST MANAGER */
-$request = new \Symfony\Component\HttpFoundation\Request($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
-
 try {
-    $attributes = $matcher->match($request->getPathInfo());
+    $attributes = $router->match($request->getPathInfo());
     $request->attributes->replace($attributes);
-} catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
-    //
-} catch (\Symfony\Component\Routing\Exception\MethodNotAllowedException $e) {
-    //
+    /**
+     * \Symfony\Component\Routing\Exception\ResourceNotFoundException $e
+     * \Symfony\Component\Routing\Exception\MethodNotAllowedException $e
+     */
+} catch (\Symfony\Component\Routing\Exception\ExceptionInterface $e) {
+    exit(new \Symfony\Component\HttpFoundation\RedirectResponse($container->get('router')->generate('index')));
 }
 
 /** SET CONTAINER DATA */
 $container->set('session', $session);
 $container->set('user', $session->get('user')?? new Utilisateur());
-$container->set('request', $request);
 $container->set('request_uri', $container->get('request')->getRequestUri());
+$container->set('base_uri', $container->get('context')->getBaseUrl());
+$container->set('generate_uri', function ($path) use ($container) {
+    return $container->get('base_uri') . $path;
+});
 $ymlLoader->load('form.yml');
 $ymlLoader->load('twig_extension.yml');
 
@@ -97,19 +103,22 @@ include_once CONTROLLER_PATH . 'signup.php';
 
 
 /**
+ * @param Container   $container
  * @param Request     $request
  * @param Session     $session
  * @param Utilisateur $user
  * @param array       $options
+ *
+ * @throws Exception
  */
-function initSession(Request $request, Session $session, Utilisateur $user, array $options = [])
+function initSession(Container $container, Request $request, Session $session, Utilisateur $user, array $options = [])
 {
 
     if (!$user->exist($options['withPass']?? false)) {
         if ($request->isXmlHttpRequest()) {
             exit(json_encode(['error' => ['id' => $request, 'message' => 'Incorrect username or password.']]));
         } else {
-            header('Location: index.php?err=' . SessionException::$SESSION_LOGIN_FAILED);
+            header('Location: '. $container->get('router')->generate('index'));
             exit();
         }
     }
@@ -121,10 +130,11 @@ function initSession(Request $request, Session $session, Utilisateur $user, arra
     $session->set('user', $user->loadUser());
     $request->setSession($session);
 
+    $location = $container->get('router')->generate('account');
     if ($request->isXmlHttpRequest()) {
-        exit(json_encode(['location' => 'account.php']));
+        exit(json_encode(['location' => $location]));
     }
 
-    header('Location: account.php');
+    header('Location: ' . $location);
     exit();
 }
